@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
-define( 'GW_ELEMENTS_VERSION', '1.0.32' );
+define( 'GW_ELEMENTS_VERSION', '1.0.33' );
 define( 'GW_ELEMENTS_FILE', __FILE__ );
 define( 'GW_ELEMENTS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'GW_ELEMENTS_URL', plugin_dir_url( __FILE__ ) );

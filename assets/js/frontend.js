@@ -244,6 +244,106 @@
     }
 
     /**
+     * Quantity buttons for single product
+     */
+    class QuantityButtons {
+        constructor() {
+            this.init();
+        }
+
+        init() {
+            this.wrapQuantityInputs();
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('gw-qty-btn')) {
+                    this.handleClick(e.target);
+                }
+            });
+        }
+
+        wrapQuantityInputs() {
+            document.querySelectorAll('.woocommerce .quantity:not(.gw-qty-wrapped)').forEach(wrapper => {
+                const input = wrapper.querySelector('input.qty');
+                if (!input) return;
+
+                wrapper.classList.add('gw-qty-wrapped');
+
+                const minus = document.createElement('button');
+                minus.type = 'button';
+                minus.className = 'gw-qty-btn gw-qty-minus';
+                minus.textContent = '−';
+
+                const plus = document.createElement('button');
+                plus.type = 'button';
+                plus.className = 'gw-qty-btn gw-qty-plus';
+                plus.textContent = '+';
+
+                input.before(minus);
+                input.after(plus);
+            });
+        }
+
+        handleClick(btn) {
+            const wrapper = btn.closest('.quantity');
+            const input = wrapper.querySelector('input.qty');
+            if (!input) return;
+
+            const min = parseFloat(input.min) || 1;
+            const max = parseFloat(input.max) || 9999;
+            const step = parseFloat(input.step) || 1;
+            let value = parseFloat(input.value) || min;
+
+            if (btn.classList.contains('gw-qty-minus')) {
+                value = Math.max(min, value - step);
+            } else if (btn.classList.contains('gw-qty-plus')) {
+                value = Math.min(max, value + step);
+            }
+
+            input.value = value;
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+
+    /**
+     * Wishlist button handler
+     */
+    class WishlistHandler {
+        constructor() {
+            this.init();
+        }
+
+        init() {
+            document.addEventListener('click', (e) => {
+                const btn = e.target.closest('.gw-wishlist-btn');
+                if (btn) {
+                    e.preventDefault();
+                    this.toggle(btn);
+                }
+            });
+        }
+
+        toggle(btn) {
+            const productId = btn.dataset.productId;
+            if (!productId) return;
+
+            btn.classList.toggle('is-wishlisted');
+
+            const wcData = window.gwWooCommerce || {};
+            const ajaxUrl = wcData.ajaxUrl || '/wp-admin/admin-ajax.php';
+            const nonce = wcData.nonce || '';
+
+            const formData = new FormData();
+            formData.append('action', 'gw_toggle_wishlist');
+            formData.append('product_id', productId);
+            formData.append('nonce', nonce);
+
+            fetch(ajaxUrl, {
+                method: 'POST',
+                body: formData
+            }).catch(err => console.error('Wishlist error:', err));
+        }
+    }
+
+    /**
      * Initialize all components
      */
     function initAll() {
@@ -251,6 +351,8 @@
         GWElements.addToCart = new AddToCart();
         GWElements.formHandler = new FormHandler();
         GWElements.smoothScroll = new SmoothScroll();
+        GWElements.quantityButtons = new QuantityButtons();
+        GWElements.wishlistHandler = new WishlistHandler();
     }
 
     // Initialize on DOM ready
