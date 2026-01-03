@@ -1,0 +1,73 @@
+/**
+ * GW Trust Points Widget Styles
+ */
+
+.gw-trust-points {
+    padding: 1.5rem 0;
+    background-color: hsl(var(--gw-secondary));
+}
+
+@media (min-width: 768px) {
+    .gw-trust-points {
+        padding: 2rem 0;
+    }
+}
+
+.gw-trust-points--bordered {
+    border-bottom: 1px solid hsl(var(--gw-border));
+}
+
+.gw-trust-points__grid {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .gw-trust-points__grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+}
+
+.gw-trust-points__item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.gw-trust-points__icon-wrap {
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background-color: hsl(var(--gw-burgundy-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gw-trust-points__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: hsl(var(--gw-primary));
+}
+
+.gw-trust-points__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.gw-trust-points__title {
+    font-family: var(--gw-font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: hsl(var(--gw-foreground));
+    margin: 0 0 0.125rem 0;
+}
+
+.gw-trust-points__description {
+    font-family: var(--gw-font-sans);
+    font-size: 0.75rem;
+    color: hsl(var(--gw-muted-foreground));
+    margin: 0;
+}

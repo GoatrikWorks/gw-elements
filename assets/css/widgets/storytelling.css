@@ -1,0 +1,155 @@
+/**
+ * GW Storytelling Widget Styles
+ */
+
+.gw-storytelling {
+    padding: 3rem 0;
+}
+
+@media (min-width: 768px) {
+    .gw-storytelling {
+        padding: 5rem 0;
+    }
+}
+
+.gw-storytelling__header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+    .gw-storytelling__header {
+        margin-bottom: 2.5rem;
+    }
+}
+
+.gw-storytelling__header .gw-section-title {
+    margin-bottom: 0;
+}
+
+/* Asymmetric Grid */
+.gw-storytelling__grid {
+    display: grid;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .gw-storytelling__grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 1.5rem;
+    }
+
+    .gw-story-card--0 {
+        grid-row: span 2;
+    }
+}
+
+/* Story Card */
+.gw-story-card__inner {
+    display: block;
+    position: relative;
+    text-decoration: none;
+}
+
+.gw-story-card__image {
+    position: relative;
+    overflow: hidden;
+    background-color: hsl(var(--gw-muted));
+}
+
+.gw-story-card--0 .gw-story-card__image {
+    aspect-ratio: 3 / 4;
+}
+
+.gw-story-card--1 .gw-story-card__image,
+.gw-story-card--2 .gw-story-card__image {
+    aspect-ratio: 16 / 9;
+}
+
+@media (min-width: 768px) {
+    .gw-story-card--0 .gw-story-card__image {
+        height: 100%;
+        aspect-ratio: auto;
+    }
+
+    .gw-story-card--1 .gw-story-card__image,
+    .gw-story-card--2 .gw-story-card__image {
+        aspect-ratio: 4 / 3;
+    }
+}
+
+.gw-story-card__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+}
+
+.gw-story-card__inner:hover .gw-story-card__image img {
+    transform: scale(1.1);
+}
+
+.gw-story-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.75) 0%,
+        rgba(0, 0, 0, 0.3) 40%,
+        transparent 100%
+    );
+}
+
+.gw-story-card__content {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .gw-story-card__content {
+        padding: 2rem;
+    }
+}
+
+.gw-story-card__title {
+    font-family: var(--gw-font-serif);
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: hsl(var(--gw-background));
+    margin: 0 0 0.5rem 0;
+}
+
+@media (min-width: 768px) {
+    .gw-story-card--0 .gw-story-card__title {
+        font-size: 1.5rem;
+    }
+}
+
+.gw-story-card__description {
+    font-family: var(--gw-font-sans);
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0 0 1rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.gw-story-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--gw-font-sans);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: hsl(var(--gw-background));
+    opacity: 0.8;
+    transition: opacity var(--gw-transition-base);
+}
+
+.gw-story-card__inner:hover .gw-story-card__link {
+    opacity: 1;
+}

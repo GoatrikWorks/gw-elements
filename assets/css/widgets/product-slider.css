@@ -1,0 +1,176 @@
+/**
+ * GW Product Slider Widget Styles
+ */
+
+.gw-product-slider {
+    padding: 3rem 0;
+}
+
+@media (min-width: 768px) {
+    .gw-product-slider {
+        padding: 5rem 0;
+    }
+}
+
+.gw-product-slider__header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .gw-product-slider__header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+    }
+}
+
+.gw-product-slider__header .gw-section-title {
+    margin-bottom: 0;
+}
+
+.gw-product-slider__header-text {
+    flex: 1;
+}
+
+.gw-product-slider__arrows {
+    display: none;
+    gap: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .gw-product-slider__arrows {
+        display: flex;
+    }
+}
+
+.gw-product-slider__arrow {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 1px solid hsl(var(--gw-border));
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color var(--gw-transition-base), border-color var(--gw-transition-base);
+}
+
+.gw-product-slider__arrow:hover {
+    background-color: hsl(var(--gw-secondary));
+    border-color: hsl(var(--gw-foreground) / 0.2);
+}
+
+.gw-product-slider__arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.gw-no-products {
+    text-align: center;
+    padding: 2rem;
+    color: hsl(var(--gw-muted-foreground));
+    font-family: var(--gw-font-sans);
+}
+
+/* Slider container - ensure visibility */
+.gw-product-slider .splide {
+    overflow: hidden;
+    visibility: visible !important;
+}
+
+/* Slider track */
+.gw-product-slider .splide__track {
+    overflow: visible;
+}
+
+/* Force visibility for slides before Splide initializes */
+.gw-product-slider .splide:not(.is-initialized) {
+    visibility: visible !important;
+}
+
+.gw-product-slider .splide:not(.is-initialized) .splide__list {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+
+.gw-product-slider .splide:not(.is-initialized) .splide__slide {
+    scroll-snap-align: start;
+    flex: 0 0 calc(50% - 0.25rem);
+}
+
+@media (min-width: 768px) {
+    .gw-product-slider .splide:not(.is-initialized) .splide__slide {
+        flex: 0 0 calc(33.333% - 0.333rem);
+    }
+}
+
+@media (min-width: 1024px) {
+    .gw-product-slider .splide:not(.is-initialized) .splide__slide {
+        flex: 0 0 calc(25% - 0.375rem);
+    }
+}
+
+/* Slider list - ensure equal heights */
+.gw-product-slider .splide__list {
+    display: flex;
+    align-items: stretch !important;
+}
+
+/* Slider slides */
+.gw-product-slider .splide__slide {
+    min-width: 0;
+    box-sizing: border-box;
+    display: flex;
+}
+
+/* Ensure card fills the slide completely */
+.gw-product-slider .splide__slide .gw-product-card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Force all slides to have same height */
+.gw-product-slider .splide__slide {
+    height: auto !important;
+}
+
+/* When Splide is initialized, let it control the layout */
+.gw-product-slider .splide.is-initialized .splide__track {
+    overflow: hidden;
+}
+
+/* Mobile arrows - show below slider */
+.gw-product-slider__mobile-arrows {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .gw-product-slider__mobile-arrows {
+        display: none;
+    }
+}
+
+/* Footer with View All link */
+.gw-product-slider__footer {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.gw-product-slider__footer .gw-button--editorial {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}

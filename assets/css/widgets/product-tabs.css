@@ -1,0 +1,164 @@
+/**
+ * Product Tabs Widget Styles
+ * Matches React ProductPage tabs from facit
+ */
+
+.gw-product-tabs {
+    margin-top: 3rem;
+}
+
+@media (min-width: 768px) {
+    .gw-product-tabs {
+        margin-top: 4rem;
+    }
+}
+
+/* Tab Navigation */
+.gw-product-tabs__nav-wrapper {
+    border-bottom: 1px solid var(--gw-border, #e5e5e5);
+}
+
+.gw-product-tabs__nav {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.gw-product-tabs__nav::-webkit-scrollbar {
+    display: none;
+}
+
+.gw-product-tabs__tab {
+    position: relative;
+    padding: 0 0 1rem;
+    font-family: var(--gw-font-sans, 'Outfit', sans-serif);
+    font-size: 0.875rem;
+    font-weight: 400;
+    white-space: nowrap;
+    color: var(--gw-muted-foreground, #737373);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.gw-product-tabs__tab:hover {
+    color: var(--gw-foreground, #1a1a1a);
+}
+
+.gw-product-tabs__tab.is-active {
+    color: var(--gw-foreground, #1a1a1a);
+}
+
+/* Active indicator */
+.gw-product-tabs__tab::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--gw-primary, #5c0a2d);
+    transform: scaleX(0);
+    transition: transform 0.2s ease;
+}
+
+.gw-product-tabs__tab.is-active::after {
+    transform: scaleX(1);
+}
+
+/* Tab Content */
+.gw-product-tabs__content {
+    padding-top: 2rem;
+}
+
+.gw-product-tabs__panel {
+    display: none;
+}
+
+.gw-product-tabs__panel.is-active {
+    display: block;
+    animation: gw-fade-in 0.3s ease;
+}
+
+.gw-product-tabs__panel-content {
+    max-width: 48rem;
+}
+
+/* Content Typography */
+.gw-product-tabs__panel-content p {
+    color: var(--gw-muted-foreground, #737373);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    white-space: pre-line;
+}
+
+.gw-product-tabs__panel-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Details/Attributes List */
+.gw-product-details {
+    max-width: 32rem;
+}
+
+.gw-product-details__item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--gw-border, #e5e5e5);
+}
+
+.gw-product-details dt {
+    color: var(--gw-muted-foreground, #737373);
+    text-transform: capitalize;
+}
+
+.gw-product-details dd {
+    font-weight: 500;
+    color: var(--gw-foreground, #1a1a1a);
+    margin: 0;
+}
+
+/* Muted text for empty states */
+.gw-text-muted {
+    color: var(--gw-muted-foreground, #737373);
+}
+
+/* Reviews styling override */
+.gw-product-tabs__panel .woocommerce-Reviews {
+    margin: 0;
+}
+
+.gw-product-tabs__panel .woocommerce-Reviews-title {
+    font-family: var(--gw-font-serif, 'Playfair Display', serif);
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.gw-product-tabs__panel .comment-respond {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--gw-border, #e5e5e5);
+}
+
+/* Fade in animation */
+@keyframes gw-fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Focus visible */
+.gw-product-tabs__tab:focus-visible {
+    outline: 2px solid var(--gw-primary, #5c0a2d);
+    outline-offset: 2px;
+}

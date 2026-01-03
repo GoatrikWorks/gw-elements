@@ -1,0 +1,88 @@
+/**
+ * GW Newsletter Widget Styles
+ */
+
+.gw-newsletter {
+    padding: 2rem;
+}
+
+.gw-newsletter--inline {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .gw-newsletter--inline {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.gw-newsletter__content {
+    flex: 1;
+}
+
+.gw-newsletter__title {
+    font-family: var(--gw-font-serif);
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: hsl(var(--gw-foreground));
+    margin: 0 0 0.5rem 0;
+}
+
+.gw-newsletter__description {
+    font-family: var(--gw-font-sans);
+    font-size: 0.875rem;
+    color: hsl(var(--gw-muted-foreground));
+    margin: 0;
+}
+
+.gw-newsletter__form {
+    flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+    .gw-newsletter__form {
+        width: 100%;
+        max-width: 24rem;
+    }
+}
+
+.gw-newsletter__input-group {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.gw-newsletter__input {
+    flex: 1;
+    min-width: 0;
+}
+
+.gw-newsletter__privacy {
+    font-family: var(--gw-font-sans);
+    font-size: 0.75rem;
+    color: hsl(var(--gw-muted-foreground));
+    margin: 0.75rem 0 0 0;
+}
+
+/* Stacked Layout */
+.gw-newsletter--stacked {
+    text-align: center;
+}
+
+.gw-newsletter--stacked .gw-newsletter__form {
+    margin: 1.5rem auto 0;
+    max-width: 24rem;
+}
+
+.gw-newsletter--stacked .gw-newsletter__input-group {
+    flex-direction: column;
+}
+
+@media (min-width: 480px) {
+    .gw-newsletter--stacked .gw-newsletter__input-group {
+        flex-direction: row;
+    }
+}

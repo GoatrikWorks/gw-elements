@@ -1,0 +1,44 @@
+/**
+ * GW Contact Form Widget Styles
+ */
+
+.gw-contact-form__fields {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .gw-contact-form__fields {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .gw-form-group--full {
+        grid-column: span 2;
+    }
+}
+
+.gw-contact-form .gw-form-group {
+    margin-bottom: 0;
+}
+
+.gw-contact-form__submit {
+    margin-top: 1.5rem;
+}
+
+.gw-contact-form__message {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: var(--gw-radius);
+    font-family: var(--gw-font-sans);
+    font-size: 0.875rem;
+}
+
+.gw-contact-form__message--success {
+    background-color: hsl(142 76% 90%);
+    color: hsl(142 76% 20%);
+}
+
+.gw-contact-form__message--error {
+    background-color: hsl(0 84% 90%);
+    color: hsl(0 84% 20%);
+}

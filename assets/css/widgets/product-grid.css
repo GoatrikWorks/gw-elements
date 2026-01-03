@@ -1,0 +1,79 @@
+/**
+ * GW Product Grid Widget Styles
+ */
+
+.gw-product-grid__items {
+    display: grid;
+    gap: 1.5rem;
+}
+
+@media (min-width: 480px) {
+    .gw-product-grid__items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 768px) {
+    .gw-product-grid__items.gw-grid--3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .gw-product-grid__items.gw-grid--4,
+    .gw-product-grid__items.gw-grid--5 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .gw-product-grid__items.gw-grid--4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .gw-product-grid__items.gw-grid--5 {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.gw-product-grid__pagination {
+    margin-top: 2.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.gw-product-grid__pagination a,
+.gw-product-grid__pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding: 0 0.75rem;
+    border: 1px solid hsl(var(--gw-border));
+    border-radius: var(--gw-radius);
+    font-family: var(--gw-font-sans);
+    font-size: 0.875rem;
+    color: hsl(var(--gw-foreground));
+    text-decoration: none;
+    transition: background-color var(--gw-transition-base), border-color var(--gw-transition-base);
+}
+
+.gw-product-grid__pagination a:hover {
+    background-color: hsl(var(--gw-secondary));
+}
+
+.gw-product-grid__pagination .current {
+    background-color: hsl(var(--gw-primary));
+    border-color: hsl(var(--gw-primary));
+    color: hsl(var(--gw-primary-foreground));
+}
+
+.gw-product-grid.is-loading::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

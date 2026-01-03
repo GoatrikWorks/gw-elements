@@ -1,0 +1,40 @@
+/**
+ * GW FAQ Accordion Widget Styles
+ */
+
+.gw-faq {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.gw-faq__category-title {
+    font-family: var(--gw-font-serif);
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: hsl(var(--gw-foreground));
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid hsl(var(--gw-border));
+}
+
+@media (min-width: 768px) {
+    .gw-faq__category-title {
+        font-size: 1.875rem;
+    }
+}
+
+/* Override base accordion styles for FAQ */
+.gw-faq .gw-accordion__item {
+    border-radius: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.gw-faq .gw-accordion__trigger {
+    padding: 1rem 0;
+}
+
+.gw-faq .gw-accordion__content-inner {
+    padding: 0 0 1rem 0;
+}
