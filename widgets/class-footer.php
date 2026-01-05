@@ -9,6 +9,7 @@ namespace GW\Elements\Widgets;
 
 use Elementor\Controls_Manager;
 use Elementor\Repeater;
+use Elementor\Group_Control_Typography;
 
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
@@ -279,6 +280,33 @@ class Footer extends Widget_Base_GW {
             ]
         );
 
+        $this->add_control(
+            'twitter_url',
+            [
+                'label'       => esc_html__( 'Twitter/X URL', 'gw-elements' ),
+                'type'        => Controls_Manager::URL,
+                'placeholder' => 'https://twitter.com/...',
+            ]
+        );
+
+        $this->add_control(
+            'youtube_url',
+            [
+                'label'       => esc_html__( 'YouTube URL', 'gw-elements' ),
+                'type'        => Controls_Manager::URL,
+                'placeholder' => 'https://youtube.com/...',
+            ]
+        );
+
+        $this->add_control(
+            'linkedin_url',
+            [
+                'label'       => esc_html__( 'LinkedIn URL', 'gw-elements' ),
+                'type'        => Controls_Manager::URL,
+                'placeholder' => 'https://linkedin.com/...',
+            ]
+        );
+
         $this->end_controls_section();
 
         // Bottom Section.
@@ -391,6 +419,65 @@ class Footer extends Widget_Base_GW {
             ]
         );
 
+        $this->add_responsive_control(
+            'footer_padding',
+            [
+                'label'      => esc_html__( 'Padding', 'gw-elements' ),
+                'type'       => Controls_Manager::DIMENSIONS,
+                'size_units' => [ 'px', 'rem' ],
+                'selectors'  => [
+                    '{{WRAPPER}} .gw-footer' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // Typography Section.
+        $this->start_controls_section(
+            'section_typography',
+            [
+                'label' => esc_html__( 'Typography', 'gw-elements' ),
+                'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'     => 'column_title_typography',
+                'label'    => esc_html__( 'Column Title Typography', 'gw-elements' ),
+                'selector' => '{{WRAPPER}} .gw-footer__column-title',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'     => 'link_typography',
+                'label'    => esc_html__( 'Link Typography', 'gw-elements' ),
+                'selector' => '{{WRAPPER}} .gw-footer__link',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'     => 'tagline_typography',
+                'label'    => esc_html__( 'Tagline Typography', 'gw-elements' ),
+                'selector' => '{{WRAPPER}} .gw-footer__tagline',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'     => 'copyright_typography',
+                'label'    => esc_html__( 'Copyright Typography', 'gw-elements' ),
+                'selector' => '{{WRAPPER}} .gw-footer__copyright',
+            ]
+        );
+
         $this->end_controls_section();
 
         // Animation controls.
@@ -432,6 +519,21 @@ class Footer extends Widget_Base_GW {
                             <?php if ( ! empty( $settings['facebook_url']['url'] ) ) : ?>
                                 <a href="<?php echo esc_url( $settings['facebook_url']['url'] ); ?>" class="gw-footer__social-link" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                                     <?php echo $this->render_icon( 'facebook' ); ?>
+                                </a>
+                            <?php endif; ?>
+                            <?php if ( ! empty( $settings['twitter_url']['url'] ) ) : ?>
+                                <a href="<?php echo esc_url( $settings['twitter_url']['url'] ); ?>" class="gw-footer__social-link" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                                    <?php echo $this->render_icon( 'twitter' ); ?>
+                                </a>
+                            <?php endif; ?>
+                            <?php if ( ! empty( $settings['youtube_url']['url'] ) ) : ?>
+                                <a href="<?php echo esc_url( $settings['youtube_url']['url'] ); ?>" class="gw-footer__social-link" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                                    <?php echo $this->render_icon( 'youtube' ); ?>
+                                </a>
+                            <?php endif; ?>
+                            <?php if ( ! empty( $settings['linkedin_url']['url'] ) ) : ?>
+                                <a href="<?php echo esc_url( $settings['linkedin_url']['url'] ); ?>" class="gw-footer__social-link" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                                    <?php echo $this->render_icon( 'linkedin' ); ?>
                                 </a>
                             <?php endif; ?>
                         </div>

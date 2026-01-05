@@ -78,12 +78,27 @@ class Storytelling extends Widget_Base_GW {
         );
 
         $this->add_control(
+            'show_header',
+            [
+                'label'        => esc_html__( 'Show Header', 'gw-elements' ),
+                'type'         => Controls_Manager::SWITCHER,
+                'label_on'     => esc_html__( 'Yes', 'gw-elements' ),
+                'label_off'    => esc_html__( 'No', 'gw-elements' ),
+                'return_value' => 'yes',
+                'default'      => 'yes',
+            ]
+        );
+
+        $this->add_control(
             'subtitle',
             [
                 'label'       => esc_html__( 'Subtitle', 'gw-elements' ),
                 'type'        => Controls_Manager::TEXT,
                 'default'     => 'Scopri le nostre',
                 'label_block' => true,
+                'condition'   => [
+                    'show_header' => 'yes',
+                ],
             ]
         );
 
@@ -94,6 +109,38 @@ class Storytelling extends Widget_Base_GW {
                 'type'        => Controls_Manager::TEXT,
                 'default'     => 'Storie di Benessere',
                 'label_block' => true,
+                'condition'   => [
+                    'show_header' => 'yes',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'header_align',
+            [
+                'label'   => esc_html__( 'Alignment', 'gw-elements' ),
+                'type'    => Controls_Manager::CHOOSE,
+                'options' => [
+                    'left'   => [
+                        'title' => esc_html__( 'Left', 'gw-elements' ),
+                        'icon'  => 'eicon-text-align-left',
+                    ],
+                    'center' => [
+                        'title' => esc_html__( 'Center', 'gw-elements' ),
+                        'icon'  => 'eicon-text-align-center',
+                    ],
+                    'right'  => [
+                        'title' => esc_html__( 'Right', 'gw-elements' ),
+                        'icon'  => 'eicon-text-align-right',
+                    ],
+                ],
+                'default' => 'center',
+                'condition' => [
+                    'show_header' => 'yes',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .gw-storytelling__header' => 'text-align: {{VALUE}};',
+                ],
             ]
         );
 
@@ -139,6 +186,15 @@ class Storytelling extends Widget_Base_GW {
         );
 
         $repeater->add_control(
+            'link_text',
+            [
+                'label'   => esc_html__( 'Link Text', 'gw-elements' ),
+                'type'    => Controls_Manager::TEXT,
+                'default' => esc_html__( 'Leggi di più', 'gw-elements' ),
+            ]
+        );
+
+        $repeater->add_control(
             'link',
             [
                 'label'       => esc_html__( 'Link', 'gw-elements' ),
@@ -173,12 +229,23 @@ class Storytelling extends Widget_Base_GW {
 
         $this->end_controls_section();
 
-        // Style Section.
+        // Layout Section.
         $this->start_controls_section(
-            'section_style',
+            'section_layout',
             [
-                'label' => esc_html__( 'Style', 'gw-elements' ),
+                'label' => esc_html__( 'Layout', 'gw-elements' ),
                 'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'background_color',
+            [
+                'label'     => esc_html__( 'Background Color', 'gw-elements' ),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .gw-storytelling' => 'background-color: {{VALUE}};',
+                ],
             ]
         );
 
@@ -201,6 +268,201 @@ class Storytelling extends Widget_Base_GW {
             ]
         );
 
+        $this->add_responsive_control(
+            'columns',
+            [
+                'label'   => esc_html__( 'Columns', 'gw-elements' ),
+                'type'    => Controls_Manager::SELECT,
+                'default' => '3',
+                'options' => [
+                    '1' => '1',
+                    '2' => '2',
+                    '3' => '3',
+                    '4' => '4',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .gw-storytelling__grid' => 'grid-template-columns: repeat({{VALUE}}, 1fr);',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'gap',
+            [
+                'label'      => esc_html__( 'Gap', 'gw-elements' ),
+                'type'       => Controls_Manager::SLIDER,
+                'size_units' => [ 'px', 'rem' ],
+                'range'      => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 50,
+                    ],
+                ],
+                'default'    => [
+                    'size' => 1.5,
+                    'unit' => 'rem',
+                ],
+                'selectors'  => [
+                    '{{WRAPPER}} .gw-storytelling__grid' => 'gap: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // Typography Section.
+        $this->start_controls_section(
+            'section_typography',
+            [
+                'label' => esc_html__( 'Typography', 'gw-elements' ),
+                'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'     => 'subtitle_typography',
+                'label'    => esc_html__( 'Subtitle Typography', 'gw-elements' ),
+                'selector' => '{{WRAPPER}} .gw-section-subtitle',
+            ]
+        );
+
+        $this->add_control(
+            'subtitle_color',
+            [
+                'label'     => esc_html__( 'Subtitle Color', 'gw-elements' ),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .gw-section-subtitle' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'     => 'title_typography',
+                'label'    => esc_html__( 'Title Typography', 'gw-elements' ),
+                'selector' => '{{WRAPPER}} .gw-section-title',
+            ]
+        );
+
+        $this->add_control(
+            'title_color',
+            [
+                'label'     => esc_html__( 'Title Color', 'gw-elements' ),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .gw-section-title' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // Card Style Section.
+        $this->start_controls_section(
+            'section_card_style',
+            [
+                'label' => esc_html__( 'Card Style', 'gw-elements' ),
+                'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_responsive_control(
+            'card_height',
+            [
+                'label'      => esc_html__( 'Card Height', 'gw-elements' ),
+                'type'       => Controls_Manager::SLIDER,
+                'size_units' => [ 'px', 'rem', 'vh' ],
+                'range'      => [
+                    'px' => [
+                        'min' => 200,
+                        'max' => 600,
+                    ],
+                    'vh' => [
+                        'min' => 20,
+                        'max' => 80,
+                    ],
+                ],
+                'selectors'  => [
+                    '{{WRAPPER}} .gw-story-card__image' => 'height: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'card_border_radius',
+            [
+                'label'      => esc_html__( 'Border Radius', 'gw-elements' ),
+                'type'       => Controls_Manager::SLIDER,
+                'size_units' => [ 'px', 'rem' ],
+                'range'      => [
+                    'px' => [
+                        'min' => 0,
+                        'max' => 30,
+                    ],
+                ],
+                'selectors'  => [
+                    '{{WRAPPER}} .gw-story-card__image' => 'border-radius: {{SIZE}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'     => 'card_title_typography',
+                'label'    => esc_html__( 'Card Title Typography', 'gw-elements' ),
+                'selector' => '{{WRAPPER}} .gw-story-card__title',
+            ]
+        );
+
+        $this->add_control(
+            'card_title_color',
+            [
+                'label'     => esc_html__( 'Card Title Color', 'gw-elements' ),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .gw-story-card__title' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'card_description_color',
+            [
+                'label'     => esc_html__( 'Card Description Color', 'gw-elements' ),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .gw-story-card__description' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'card_link_color',
+            [
+                'label'     => esc_html__( 'Card Link Color', 'gw-elements' ),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .gw-story-card__link' => 'color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'overlay_color',
+            [
+                'label'     => esc_html__( 'Overlay Color', 'gw-elements' ),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .gw-story-card__overlay' => 'background: linear-gradient(to top, {{VALUE}} 0%, transparent 100%);',
+                ],
+            ]
+        );
+
         $this->end_controls_section();
 
         // Animation controls.
@@ -218,7 +480,7 @@ class Storytelling extends Widget_Base_GW {
         ?>
         <section <?php $this->print_render_attribute_string( 'wrapper' ); ?>>
             <div class="gw-storytelling__container gw-container-wide">
-                <?php if ( ! empty( $settings['subtitle'] ) || ! empty( $settings['title'] ) ) : ?>
+                <?php if ( 'yes' === $settings['show_header'] && ( ! empty( $settings['subtitle'] ) || ! empty( $settings['title'] ) ) ) : ?>
                     <div class="gw-storytelling__header">
                         <?php if ( ! empty( $settings['subtitle'] ) ) : ?>
                             <span class="gw-section-subtitle"><?php echo esc_html( $settings['subtitle'] ); ?></span>
@@ -233,6 +495,7 @@ class Storytelling extends Widget_Base_GW {
                     <?php foreach ( $settings['stories'] as $index => $story ) :
                         $link = $story['link']['url'] ?? '#';
                         $image_url = $story['image']['url'] ?? '';
+                        $link_text = $story['link_text'] ?? esc_html__( 'Leggi di più', 'gw-elements' );
                     ?>
                         <article class="gw-story-card gw-story-card--<?php echo esc_attr( $index ); ?>">
                             <a href="<?php echo esc_url( $link ); ?>" class="gw-story-card__inner">
@@ -244,10 +507,12 @@ class Storytelling extends Widget_Base_GW {
                                     <div class="gw-story-card__content">
                                         <h3 class="gw-story-card__title"><?php echo esc_html( $story['title'] ); ?></h3>
                                         <p class="gw-story-card__description"><?php echo esc_html( $story['description'] ); ?></p>
-                                        <span class="gw-story-card__link">
-                                            <?php esc_html_e( 'Leggi di più', 'gw-elements' ); ?>
-                                            <?php echo $this->render_icon( 'arrow-right', [ 'class' => 'gw-icon gw-icon--sm' ] ); ?>
-                                        </span>
+                                        <?php if ( ! empty( $link_text ) ) : ?>
+                                            <span class="gw-story-card__link">
+                                                <?php echo esc_html( $link_text ); ?>
+                                                <?php echo $this->render_icon( 'arrow-right', [ 'class' => 'gw-icon gw-icon--sm' ] ); ?>
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </a>

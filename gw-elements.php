@@ -3,7 +3,7 @@
  * Plugin Name: GW Elements - Laviasana Widgets
  * Plugin URI: https://goatrikworks.com
  * Description: Custom Elementor widgets for Laviasana - pixel-perfect recreation of the React design system.
- * Version: 1.0.19
+ * Version: 1.0.20
  * Author: Erik Elb (GoatrikWorks)
  * Author URI: mailto:goatrikworks@gmail.com
  * Text Domain: gw-elements
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
-define( 'GW_ELEMENTS_VERSION', '1.0.40' );
+define( 'GW_ELEMENTS_VERSION', '1.0.41' );
 define( 'GW_ELEMENTS_FILE', __FILE__ );
 define( 'GW_ELEMENTS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'GW_ELEMENTS_URL', plugin_dir_url( __FILE__ ) );
