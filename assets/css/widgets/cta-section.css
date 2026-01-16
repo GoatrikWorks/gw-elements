@@ -3,35 +3,91 @@
  */
 
 .gw-cta-section {
-    padding: 4rem 0;
+    padding: 4rem 1rem;
+    width: 100%;
 }
 
 @media (min-width: 768px) {
     .gw-cta-section {
-        padding: 6rem 0;
+        padding: 6rem 2rem;
     }
 }
 
-.gw-cta-section--centered {
-    text-align: center;
-}
-
-.gw-cta-section--centered .gw-cta-section__description {
+/* Container - centers the content */
+.gw-cta-section__container {
+    max-width: 40rem;
     margin-left: auto;
     margin-right: auto;
 }
 
-.gw-cta-section--centered .gw-cta-section__buttons {
+/* Alignment: Center (default) */
+.gw-cta-section--align-center {
+    text-align: center;
+}
+
+.gw-cta-section--align-center .gw-cta-section__container {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gw-cta-section--align-center .gw-cta-section__description {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gw-cta-section--align-center .gw-cta-section__buttons {
     justify-content: center;
 }
 
+/* Alignment: Left */
+.gw-cta-section--align-left {
+    text-align: left;
+}
+
+.gw-cta-section--align-left .gw-cta-section__container {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.gw-cta-section--align-left .gw-cta-section__description {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.gw-cta-section--align-left .gw-cta-section__buttons {
+    justify-content: flex-start;
+}
+
+/* Alignment: Right */
+.gw-cta-section--align-right {
+    text-align: right;
+}
+
+.gw-cta-section--align-right .gw-cta-section__container {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.gw-cta-section--align-right .gw-cta-section__description {
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.gw-cta-section--align-right .gw-cta-section__buttons {
+    justify-content: flex-end;
+}
+
+/* Subtitle */
 .gw-cta-section__subtitle {
+    display: block;
     margin-bottom: 0.75rem;
 }
 
+/* Title */
 .gw-cta-section__title {
     font-size: 1.875rem;
-    margin-bottom: 1rem;
+    margin: 0 0 1rem 0;
+    line-height: 1.2;
 }
 
 @media (min-width: 768px) {
@@ -46,6 +102,7 @@
     }
 }
 
+/* Description */
 .gw-cta-section__description {
     font-family: var(--gw-font-sans);
     font-size: 1rem;
@@ -55,10 +112,20 @@
     max-width: 32rem;
 }
 
+.gw-cta-section__description p {
+    margin: 0;
+}
+
+.gw-cta-section__description p + p {
+    margin-top: 1em;
+}
+
+/* Buttons */
 .gw-cta-section__buttons {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    flex-wrap: wrap;
 }
 
 @media (min-width: 640px) {

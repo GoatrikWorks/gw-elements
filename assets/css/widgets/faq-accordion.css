@@ -149,6 +149,19 @@
     padding: 0 1.5rem 1.5rem 1.5rem;
 }
 
+/* Accordion base */
+.gw-accordion {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Content animation */
+.gw-accordion__content {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease;
+}
+
 /* Trigger */
 .gw-faq .gw-accordion__trigger {
     display: flex;
@@ -165,6 +178,9 @@
     cursor: pointer;
     transition: color 0.2s ease;
     gap: 1rem;
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
 }
 
 .gw-faq .gw-accordion__trigger:hover {

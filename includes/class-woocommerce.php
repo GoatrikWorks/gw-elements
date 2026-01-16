@@ -98,6 +98,35 @@ class WooCommerce {
 
         // Localize script data.
         add_action( 'wp_enqueue_scripts', [ $this, 'localize_scripts' ], 20 );
+
+        // Render cart drawer and search modal in footer.
+        add_action( 'wp_footer', [ $this, 'render_cart_drawer' ] );
+        add_action( 'wp_footer', [ $this, 'render_search_modal' ] );
+
+        // WooCommerce template overrides.
+        add_filter( 'woocommerce_locate_template', [ $this, 'locate_template' ], 10, 3 );
+        add_filter( 'wc_get_template_part', [ $this, 'locate_template_part' ], 10, 3 );
+
+        // Disable Elementor Theme Builder for single products to use our custom template.
+        add_filter( 'elementor/theme/need_override_location', [ $this, 'disable_elementor_single_product' ], 10, 2 );
+    }
+
+    /**
+     * Disable Elementor Theme Builder template for single products.
+     *
+     * This allows our custom WooCommerce template to be used instead.
+     *
+     * @param bool   $need_override Whether Elementor should override the location.
+     * @param string $location      The template location (single, archive, etc.).
+     * @return bool
+     */
+    public function disable_elementor_single_product( bool $need_override, string $location ): bool {
+        // Disable Elementor single product template.
+        if ( 'single' === $location && is_product() ) {
+            return false;
+        }
+
+        return $need_override;
     }
 
     /**
@@ -892,5 +921,161 @@ class WooCommerce {
      */
     public function get_wishlist_count(): int {
         return count( $this->get_wishlist() );
+    }
+
+    /**
+     * Render cart drawer in footer.
+     */
+    public function render_cart_drawer(): void {
+        if ( ! function_exists( 'WC' ) ) {
+            return;
+        }
+
+        // Enqueue cart drawer assets.
+        wp_enqueue_style( 'gw-widget-cart-drawer' );
+        wp_enqueue_script( 'gw-widget-cart-drawer' );
+
+        $cart_count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0;
+        ?>
+        <div class="gw-cart-drawer" data-position="right">
+            <div class="gw-cart-drawer__overlay" aria-hidden="true"></div>
+
+            <div class="gw-cart-drawer__panel" role="dialog" aria-modal="true" aria-labelledby="gw-cart-drawer-title">
+                <header class="gw-cart-drawer__header">
+                    <h2 id="gw-cart-drawer-title" class="gw-cart-drawer__title">
+                        <?php esc_html_e( 'Carrello', 'gw-elements' ); ?>
+                        <span class="gw-cart-drawer__count">(<span class="gw-cart-count"><?php echo esc_html( $cart_count ); ?></span>)</span>
+                    </h2>
+                    <button type="button" class="gw-cart-drawer__close" aria-label="<?php esc_attr_e( 'Chiudi carrello', 'gw-elements' ); ?>">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                        </svg>
+                    </button>
+                </header>
+
+                <div class="gw-cart-drawer__body">
+                    <div class="gw-mini-cart-content">
+                        <?php echo $this->render_mini_cart(); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Override WooCommerce templates with plugin templates.
+     *
+     * @param string $template      Template path.
+     * @param string $template_name Template name.
+     * @param string $template_path Template path from WC.
+     * @return string
+     */
+    public function locate_template( string $template, string $template_name, string $template_path ): string {
+        $plugin_path = GW_ELEMENTS_PATH . 'templates/woocommerce/';
+
+        // Check if template exists in our plugin.
+        if ( file_exists( $plugin_path . $template_name ) ) {
+            return $plugin_path . $template_name;
+        }
+
+        return $template;
+    }
+
+    /**
+     * Override WooCommerce template parts.
+     *
+     * @param string $template Template path.
+     * @param string $slug     Template slug.
+     * @param string $name     Template name.
+     * @return string
+     */
+    public function locate_template_part( string $template, string $slug, string $name ): string {
+        $plugin_path = GW_ELEMENTS_PATH . 'templates/woocommerce/';
+
+        // Build possible template names.
+        if ( $name ) {
+            $template_name = "{$slug}-{$name}.php";
+        } else {
+            $template_name = "{$slug}.php";
+        }
+
+        // Check if template exists in our plugin.
+        if ( file_exists( $plugin_path . $template_name ) ) {
+            return $plugin_path . $template_name;
+        }
+
+        return $template;
+    }
+
+    /**
+     * Render search modal in footer.
+     */
+    public function render_search_modal(): void {
+        // Enqueue search modal assets.
+        wp_enqueue_style( 'gw-widget-search-modal' );
+        wp_enqueue_script( 'gw-widget-search-modal' );
+
+        $shop_url = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'shop' ) : home_url( '/shop/' );
+        ?>
+        <div class="gw-search-modal"
+            data-min-chars="2"
+            data-max-results="8"
+            data-show-categories="true"
+            data-show-prices="true">
+
+            <div class="gw-search-modal__container" role="dialog" aria-modal="true" aria-labelledby="gw-search-title">
+                <div class="gw-search-modal__backdrop">
+                    <div class="gw-search-modal__overlay"></div>
+                </div>
+
+                <div class="gw-search-modal__content">
+                    <div class="gw-search-modal__header">
+                        <div class="gw-search-modal__input-wrapper">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="gw-icon gw-search-modal__icon">
+                                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                            </svg>
+                            <input
+                                type="search"
+                                class="gw-search-modal__input"
+                                placeholder="<?php esc_attr_e( 'Cerca prodotti...', 'gw-elements' ); ?>"
+                                aria-label="<?php esc_attr_e( 'Cerca prodotti', 'gw-elements' ); ?>"
+                                id="gw-search-title"
+                                autocomplete="off"
+                            >
+                            <button type="button" class="gw-search-modal__clear" aria-label="<?php esc_attr_e( 'Cancella ricerca', 'gw-elements' ); ?>">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                            </button>
+                        </div>
+                        <button type="button" class="gw-search-modal__close" aria-label="<?php esc_attr_e( 'Chiudi ricerca', 'gw-elements' ); ?>">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        </button>
+                    </div>
+
+                    <div class="gw-search-modal__results" aria-live="polite">
+                        <div class="gw-search-modal__loading" hidden>
+                            <svg class="gw-search-modal__spinner" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                            </svg>
+                            <span><?php esc_html_e( 'Ricerca in corso...', 'gw-elements' ); ?></span>
+                        </div>
+
+                        <div class="gw-search-modal__no-results" hidden>
+                            <p><?php esc_html_e( 'Nessun prodotto trovato', 'gw-elements' ); ?></p>
+                        </div>
+
+                        <div class="gw-search-modal__results-list"></div>
+
+                        <div class="gw-search-modal__view-all" hidden>
+                            <a href="<?php echo esc_url( $shop_url ); ?>" class="gw-search-modal__view-all-link">
+                                <?php esc_html_e( 'Vedi tutti i risultati', 'gw-elements' ); ?>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php
     }
 }

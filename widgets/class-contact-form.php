@@ -191,12 +191,111 @@ class Contact_Form extends Widget_Base_GW {
 
         $this->end_controls_section();
 
+        // Layout Section.
+        $this->start_controls_section(
+            'section_layout',
+            [
+                'label' => esc_html__( 'Layout', 'gw-elements' ),
+                'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'form_width',
+            [
+                'label'   => esc_html__( 'Form Width', 'gw-elements' ),
+                'type'    => Controls_Manager::SELECT,
+                'default' => 'medium',
+                'options' => [
+                    'narrow' => esc_html__( 'Narrow (480px)', 'gw-elements' ),
+                    'medium' => esc_html__( 'Medium (600px)', 'gw-elements' ),
+                    'wide'   => esc_html__( 'Wide (800px)', 'gw-elements' ),
+                    'full'   => esc_html__( 'Full Width', 'gw-elements' ),
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'form_alignment',
+            [
+                'label'   => esc_html__( 'Alignment', 'gw-elements' ),
+                'type'    => Controls_Manager::CHOOSE,
+                'options' => [
+                    'left'   => [
+                        'title' => esc_html__( 'Left', 'gw-elements' ),
+                        'icon'  => 'eicon-text-align-left',
+                    ],
+                    'center' => [
+                        'title' => esc_html__( 'Center', 'gw-elements' ),
+                        'icon'  => 'eicon-text-align-center',
+                    ],
+                    'right'  => [
+                        'title' => esc_html__( 'Right', 'gw-elements' ),
+                        'icon'  => 'eicon-text-align-right',
+                    ],
+                ],
+                'default' => 'center',
+                'condition' => [
+                    'form_width!' => 'full',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'form_style',
+            [
+                'label'   => esc_html__( 'Form Style', 'gw-elements' ),
+                'type'    => Controls_Manager::SELECT,
+                'default' => 'bordered',
+                'options' => [
+                    'bordered' => esc_html__( 'Bordered', 'gw-elements' ),
+                    'card'     => esc_html__( 'Card (with shadow)', 'gw-elements' ),
+                    'minimal'  => esc_html__( 'Minimal (no border)', 'gw-elements' ),
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
         // Style Section.
         $this->start_controls_section(
             'section_style',
             [
-                'label' => esc_html__( 'Style', 'gw-elements' ),
+                'label' => esc_html__( 'Form Style', 'gw-elements' ),
                 'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'form_background',
+            [
+                'label'     => esc_html__( 'Background Color', 'gw-elements' ),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .gw-contact-form__form' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'form_padding',
+            [
+                'label'      => esc_html__( 'Padding', 'gw-elements' ),
+                'type'       => Controls_Manager::SLIDER,
+                'size_units' => [ 'px', 'rem' ],
+                'range'      => [
+                    'px'  => [
+                        'min' => 0,
+                        'max' => 80,
+                    ],
+                    'rem' => [
+                        'min' => 0,
+                        'max' => 5,
+                    ],
+                ],
+                'selectors'  => [
+                    '{{WRAPPER}} .gw-contact-form__form' => 'padding: {{SIZE}}{{UNIT}};',
+                ],
             ]
         );
 
@@ -218,6 +317,43 @@ class Contact_Form extends Widget_Base_GW {
             ]
         );
 
+        $this->add_control(
+            'input_background',
+            [
+                'label'     => esc_html__( 'Input Background', 'gw-elements' ),
+                'type'      => Controls_Manager::COLOR,
+                'selectors' => [
+                    '{{WRAPPER}} .gw-input, {{WRAPPER}} .gw-textarea' => 'background-color: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
+        // Button Style Section.
+        $this->start_controls_section(
+            'section_button_style',
+            [
+                'label' => esc_html__( 'Button', 'gw-elements' ),
+                'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_control(
+            'button_full_width',
+            [
+                'label'        => esc_html__( 'Full Width Button', 'gw-elements' ),
+                'type'         => Controls_Manager::SWITCHER,
+                'label_on'     => esc_html__( 'Yes', 'gw-elements' ),
+                'label_off'    => esc_html__( 'No', 'gw-elements' ),
+                'return_value' => 'yes',
+                'default'      => '',
+                'selectors'    => [
+                    '{{WRAPPER}} .gw-contact-form__submit .gw-button' => 'width: 100%;',
+                ],
+            ]
+        );
+
         $this->end_controls_section();
 
         // Animation controls.
@@ -230,7 +366,24 @@ class Contact_Form extends Widget_Base_GW {
     protected function render(): void {
         $settings = $this->get_settings_for_display();
 
-        $this->add_render_attribute( 'wrapper', 'class', 'gw-contact-form' );
+        $wrapper_classes = [ 'gw-contact-form' ];
+
+        // Width class.
+        if ( ! empty( $settings['form_width'] ) ) {
+            $wrapper_classes[] = 'gw-contact-form--' . $settings['form_width'];
+        }
+
+        // Alignment class.
+        if ( ! empty( $settings['form_alignment'] ) && 'full' !== $settings['form_width'] ) {
+            $wrapper_classes[] = 'gw-contact-form--align-' . $settings['form_alignment'];
+        }
+
+        // Style class.
+        if ( ! empty( $settings['form_style'] ) && 'bordered' !== $settings['form_style'] ) {
+            $wrapper_classes[] = 'gw-contact-form--' . $settings['form_style'];
+        }
+
+        $this->add_render_attribute( 'wrapper', 'class', $wrapper_classes );
         $this->add_animation_wrapper_attributes( $settings );
 
         if ( 'native' !== $settings['form_type'] && ! empty( $settings['shortcode'] ) ) {

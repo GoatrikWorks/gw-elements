@@ -2,14 +2,36 @@
  * GW Contact Form Widget Styles
  */
 
-.gw-contact-form__fields {
-    display: grid;
-    gap: 1.5rem;
+/* Form container */
+.gw-contact-form {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gw-contact-form__form {
+    background-color: hsl(var(--gw-background));
+    padding: 2rem;
+    border-radius: calc(var(--gw-radius) * 2);
+    border: 1px solid hsl(var(--gw-border));
 }
 
 @media (min-width: 768px) {
+    .gw-contact-form__form {
+        padding: 2.5rem;
+    }
+}
+
+/* Fields grid */
+.gw-contact-form__fields {
+    display: grid;
+    gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
     .gw-contact-form__fields {
         grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
     }
 
     .gw-form-group--full {
@@ -17,28 +39,130 @@
     }
 }
 
+/* Form groups */
 .gw-contact-form .gw-form-group {
     margin-bottom: 0;
 }
 
-.gw-contact-form__submit {
-    margin-top: 1.5rem;
+/* Enhanced input styling */
+.gw-contact-form .gw-input,
+.gw-contact-form .gw-textarea {
+    background-color: hsl(var(--gw-secondary));
+    border-color: transparent;
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
+    transition: background-color var(--gw-transition-base),
+                border-color var(--gw-transition-base),
+                box-shadow var(--gw-transition-base);
 }
 
+.gw-contact-form .gw-input:hover,
+.gw-contact-form .gw-textarea:hover {
+    background-color: hsl(var(--gw-muted));
+}
+
+.gw-contact-form .gw-input:focus,
+.gw-contact-form .gw-textarea:focus {
+    background-color: hsl(var(--gw-background));
+    border-color: hsl(var(--gw-primary) / 0.5);
+    box-shadow: 0 0 0 3px hsl(var(--gw-primary) / 0.1);
+}
+
+/* Labels */
+.gw-contact-form .gw-label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    color: hsl(var(--gw-muted-foreground));
+    margin-bottom: 0.625rem;
+}
+
+/* Textarea */
+.gw-contact-form .gw-textarea {
+    min-height: 140px;
+}
+
+/* Submit section */
+.gw-contact-form__submit {
+    margin-top: 2rem;
+}
+
+.gw-contact-form__submit .gw-button {
+    width: 100%;
+}
+
+@media (min-width: 640px) {
+    .gw-contact-form__submit .gw-button {
+        width: auto;
+        min-width: 200px;
+    }
+}
+
+/* Messages */
 .gw-contact-form__message {
-    margin-top: 1rem;
-    padding: 1rem;
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
     border-radius: var(--gw-radius);
     font-family: var(--gw-font-sans);
     font-size: 0.875rem;
+    font-weight: 500;
 }
 
 .gw-contact-form__message--success {
-    background-color: hsl(142 76% 90%);
-    color: hsl(142 76% 20%);
+    background-color: hsl(142 76% 94%);
+    color: hsl(142 76% 25%);
+    border: 1px solid hsl(142 76% 85%);
 }
 
 .gw-contact-form__message--error {
-    background-color: hsl(0 84% 90%);
-    color: hsl(0 84% 20%);
+    background-color: hsl(0 84% 95%);
+    color: hsl(0 84% 30%);
+    border: 1px solid hsl(0 84% 85%);
+}
+
+/* Width variants controlled via Elementor */
+.gw-contact-form--narrow {
+    max-width: 480px;
+}
+
+.gw-contact-form--medium {
+    max-width: 600px;
+}
+
+.gw-contact-form--wide {
+    max-width: 800px;
+}
+
+.gw-contact-form--full {
+    max-width: none;
+}
+
+/* Style variants */
+.gw-contact-form--minimal .gw-contact-form__form {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+}
+
+.gw-contact-form--card .gw-contact-form__form {
+    box-shadow: 0 4px 6px -1px hsl(var(--gw-foreground) / 0.05),
+                0 2px 4px -2px hsl(var(--gw-foreground) / 0.05);
+}
+
+/* Alignment */
+.gw-contact-form--align-left {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+.gw-contact-form--align-center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gw-contact-form--align-right {
+    margin-left: auto;
+    margin-right: 0;
 }

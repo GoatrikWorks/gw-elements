@@ -250,9 +250,6 @@ class CTA_Section extends Widget_Base_GW {
                     ],
                 ],
                 'default' => 'center',
-                'selectors' => [
-                    '{{WRAPPER}} .gw-cta-section' => 'text-align: {{VALUE}};',
-                ],
             ]
         );
 
@@ -491,7 +488,13 @@ class CTA_Section extends Widget_Base_GW {
     protected function render(): void {
         $settings = $this->get_settings_for_display();
 
-        $this->add_render_attribute( 'wrapper', 'class', 'gw-cta-section' );
+        $wrapper_classes = [ 'gw-cta-section' ];
+
+        // Add alignment class.
+        $alignment = $settings['text_align'] ?? 'center';
+        $wrapper_classes[] = 'gw-cta-section--align-' . $alignment;
+
+        $this->add_render_attribute( 'wrapper', 'class', $wrapper_classes );
         $this->add_animation_wrapper_attributes( $settings );
         ?>
         <section <?php $this->print_render_attribute_string( 'wrapper' ); ?>>

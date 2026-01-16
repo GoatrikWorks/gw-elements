@@ -203,19 +203,36 @@ class Image_Hero extends Widget_Base_GW {
 
         $this->end_controls_section();
 
-        // Text Colors Section.
+        // Typography Section.
         $this->start_controls_section(
-            'section_text_colors',
+            'section_typography',
             [
-                'label' => esc_html__( 'Text Colors', 'gw-elements' ),
+                'label' => esc_html__( 'Typography', 'gw-elements' ),
                 'tab'   => Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        // Subtitle Typography.
+        $this->add_control(
+            'subtitle_heading',
+            [
+                'label' => esc_html__( 'Subtitle', 'gw-elements' ),
+                'type'  => Controls_Manager::HEADING,
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'     => 'subtitle_typography',
+                'selector' => '{{WRAPPER}} .gw-image-hero__subtitle',
             ]
         );
 
         $this->add_control(
             'subtitle_color',
             [
-                'label'     => esc_html__( 'Subtitle Color', 'gw-elements' ),
+                'label'     => esc_html__( 'Color', 'gw-elements' ),
                 'type'      => Controls_Manager::COLOR,
                 'default'   => '#ffffff',
                 'selectors' => [
@@ -224,10 +241,28 @@ class Image_Hero extends Widget_Base_GW {
             ]
         );
 
+        // Title Typography.
+        $this->add_control(
+            'title_heading',
+            [
+                'label'     => esc_html__( 'Title', 'gw-elements' ),
+                'type'      => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'     => 'title_typography',
+                'selector' => '{{WRAPPER}} .gw-image-hero__title',
+            ]
+        );
+
         $this->add_control(
             'title_color',
             [
-                'label'     => esc_html__( 'Title Color', 'gw-elements' ),
+                'label'     => esc_html__( 'Color', 'gw-elements' ),
                 'type'      => Controls_Manager::COLOR,
                 'default'   => '#ffffff',
                 'selectors' => [
@@ -236,10 +271,28 @@ class Image_Hero extends Widget_Base_GW {
             ]
         );
 
+        // Description Typography.
+        $this->add_control(
+            'description_heading',
+            [
+                'label'     => esc_html__( 'Description', 'gw-elements' ),
+                'type'      => Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_group_control(
+            Group_Control_Typography::get_type(),
+            [
+                'name'     => 'description_typography',
+                'selector' => '{{WRAPPER}} .gw-image-hero__description',
+            ]
+        );
+
         $this->add_control(
             'description_color',
             [
-                'label'     => esc_html__( 'Description Color', 'gw-elements' ),
+                'label'     => esc_html__( 'Color', 'gw-elements' ),
                 'type'      => Controls_Manager::COLOR,
                 'default'   => '#ffffff',
                 'selectors' => [

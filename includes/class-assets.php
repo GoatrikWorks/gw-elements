@@ -157,6 +157,7 @@ class Assets {
             'category-card',
             'cart-drawer',
             'search-modal',
+            'single-product',
 
             // Content
             'story-card',
@@ -223,6 +224,11 @@ class Assets {
         // Enqueue shop enhancements on WooCommerce shop pages.
         if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() || is_product_tag() ) ) {
             wp_enqueue_script( 'gw-shop' );
+        }
+
+        // Enqueue single product JS on product pages.
+        if ( function_exists( 'is_product' ) && is_product() ) {
+            wp_enqueue_script( 'gw-widget-single-product' );
         }
     }
 
