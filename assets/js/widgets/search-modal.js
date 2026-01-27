@@ -67,10 +67,10 @@
                 });
             }
 
-            // Overlay click
-            const overlay = this.modal.querySelector('.gw-search-modal__overlay');
-            if (overlay) {
-                overlay.addEventListener('click', () => this.close());
+            // Backdrop click (click outside to close)
+            const backdrop = this.modal.querySelector('.gw-search-modal__backdrop');
+            if (backdrop) {
+                backdrop.addEventListener('click', () => this.close());
             }
 
             // Results keyboard navigation

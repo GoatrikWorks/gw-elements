@@ -304,6 +304,161 @@
     }
 
     /**
+     * Product Gallery Fix - handles FlexSlider inline styles + touch swipe
+     */
+    class GalleryFix {
+        constructor() {
+            this.currentIndex = 0;
+            this.slides = [];
+            this.touchStartX = 0;
+            this.touchEndX = 0;
+            this.init();
+        }
+
+        init() {
+            // Fix gallery on load
+            this.fixGallery();
+
+            // Fix after FlexSlider initializes (it runs on window load)
+            window.addEventListener('load', () => {
+                setTimeout(() => this.fixGallery(), 100);
+                setTimeout(() => this.fixGallery(), 500);
+            });
+
+            // Watch for gallery changes (FlexSlider modifies DOM)
+            this.observeGallery();
+
+            // Setup touch swipe
+            this.setupTouchSwipe();
+        }
+
+        fixGallery() {
+            // Fix flex-viewport inline height
+            document.querySelectorAll('.woocommerce-product-gallery .flex-viewport').forEach(viewport => {
+                viewport.style.height = 'auto';
+                viewport.style.maxHeight = 'none';
+            });
+
+            // Fix gallery wrapper
+            document.querySelectorAll('.woocommerce-product-gallery__wrapper').forEach(wrapper => {
+                wrapper.style.transform = 'none';
+                wrapper.style.width = '100%';
+            });
+
+            // Get all slides
+            this.slides = Array.from(document.querySelectorAll('.woocommerce-product-gallery__image'));
+
+            // Fix gallery images - reset FlexSlider inline styles
+            this.slides.forEach(slide => {
+                slide.style.width = '100%';
+                slide.style.float = 'none';
+                slide.style.display = 'none';
+                slide.style.position = 'relative';
+            });
+
+            // Find current index
+            const activeSlide = document.querySelector('.woocommerce-product-gallery__image.flex-active-slide');
+            if (activeSlide) {
+                this.currentIndex = this.slides.indexOf(activeSlide);
+                activeSlide.style.display = 'block';
+            } else if (this.slides.length > 0) {
+                // If no active slide, show first one
+                this.currentIndex = 0;
+                this.slides[0].style.display = 'block';
+                this.slides[0].classList.add('flex-active-slide');
+            }
+
+            // Update thumbnails
+            this.updateThumbnails();
+        }
+
+        setupTouchSwipe() {
+            const gallery = document.querySelector('.woocommerce-product-gallery');
+            if (!gallery) return;
+
+            const viewport = gallery.querySelector('.flex-viewport') || gallery;
+
+            // Prevent default zoom behavior on drag
+            viewport.addEventListener('touchstart', (e) => {
+                this.touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            viewport.addEventListener('touchend', (e) => {
+                this.touchEndX = e.changedTouches[0].screenX;
+                this.handleSwipe();
+            }, { passive: true });
+
+            // Prevent click on links during swipe
+            viewport.addEventListener('click', (e) => {
+                if (Math.abs(this.touchStartX - this.touchEndX) > 30) {
+                    e.preventDefault();
+                }
+            });
+        }
+
+        handleSwipe() {
+            const diff = this.touchStartX - this.touchEndX;
+            const threshold = 50;
+
+            if (Math.abs(diff) < threshold) return;
+
+            if (diff > 0) {
+                // Swipe left - next
+                this.goToSlide(this.currentIndex + 1);
+            } else {
+                // Swipe right - prev
+                this.goToSlide(this.currentIndex - 1);
+            }
+        }
+
+        goToSlide(index) {
+            if (this.slides.length === 0) return;
+
+            // Wrap around
+            if (index < 0) index = this.slides.length - 1;
+            if (index >= this.slides.length) index = 0;
+
+            // Hide all, show target
+            this.slides.forEach((slide, i) => {
+                slide.style.display = i === index ? 'block' : 'none';
+                slide.classList.toggle('flex-active-slide', i === index);
+            });
+
+            this.currentIndex = index;
+            this.updateThumbnails();
+        }
+
+        updateThumbnails() {
+            const thumbs = document.querySelectorAll('.flex-control-thumbs img');
+            thumbs.forEach((thumb, i) => {
+                thumb.classList.toggle('flex-active', i === this.currentIndex);
+            });
+        }
+
+        observeGallery() {
+            const gallery = document.querySelector('.woocommerce-product-gallery');
+            if (!gallery) return;
+
+            // Watch for thumbnail clicks
+            gallery.addEventListener('click', (e) => {
+                const thumb = e.target.closest('.flex-control-thumbs img');
+                if (thumb) {
+                    e.preventDefault();
+                    this.handleThumbClick(thumb);
+                }
+            });
+        }
+
+        handleThumbClick(thumb) {
+            const thumbList = thumb.closest('ol, ul');
+            if (!thumbList) return;
+
+            const index = Array.from(thumbList.querySelectorAll('img')).indexOf(thumb);
+            this.goToSlide(index);
+        }
+    }
+
+    /**
      * Wishlist button handler
      */
     class WishlistHandler {
@@ -352,6 +507,7 @@
         GWElements.formHandler = new FormHandler();
         GWElements.smoothScroll = new SmoothScroll();
         GWElements.quantityButtons = new QuantityButtons();
+        GWElements.galleryFix = new GalleryFix();
         GWElements.wishlistHandler = new WishlistHandler();
     }
 

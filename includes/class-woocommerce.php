@@ -109,6 +109,8 @@ class WooCommerce {
 
         // Disable Elementor Theme Builder for single products to use our custom template.
         add_filter( 'elementor/theme/need_override_location', [ $this, 'disable_elementor_single_product' ], 10, 2 );
+        add_filter( 'elementor/theme/get_location_templates/product', '__return_empty_array', 999 );
+        add_filter( 'elementor/theme/get_location_templates/single', [ $this, 'filter_elementor_single_templates' ], 999 );
     }
 
     /**
@@ -121,12 +123,25 @@ class WooCommerce {
      * @return bool
      */
     public function disable_elementor_single_product( bool $need_override, string $location ): bool {
-        // Disable Elementor single product template.
-        if ( 'single' === $location && is_product() ) {
+        // Disable Elementor templates for single products.
+        if ( is_product() ) {
             return false;
         }
 
         return $need_override;
+    }
+
+    /**
+     * Filter Elementor single templates to exclude products.
+     *
+     * @param array $templates The templates array.
+     * @return array
+     */
+    public function filter_elementor_single_templates( array $templates ): array {
+        if ( is_product() ) {
+            return [];
+        }
+        return $templates;
     }
 
     /**
