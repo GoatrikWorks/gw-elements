@@ -150,3 +150,38 @@
 .gw-product-card__button.is-loading .gw-button__loading {
   display: flex;
 }
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+  .gw-product-card {
+    padding: 0.5rem;
+  }
+
+  .gw-product-card__image-link {
+    margin-bottom: 0.5rem;
+  }
+
+  .gw-product-card__content {
+    padding: 0.125rem 0.125rem 0;
+  }
+
+  .gw-product-card__category {
+    font-size: 0.625rem;
+  }
+
+  .gw-product-card__title {
+    font-size: 0.875rem;
+    height: 2.275em;
+  }
+
+  .gw-product-card__price {
+    font-size: 0.8125rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .gw-product-card__button {
+    height: 2.25rem;
+    font-size: 0.625rem;
+    padding: 0.375rem 0.75rem;
+  }
+}

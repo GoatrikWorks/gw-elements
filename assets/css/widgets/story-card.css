@@ -77,3 +77,31 @@
 .gw-story-card__link {
     align-self: flex-start;
 }
+
+/* Mobile Responsive */
+@media (max-width: 767px) {
+    .gw-story-card__image {
+        margin-bottom: 0.75rem;
+    }
+
+    .gw-story-card__meta {
+        gap: 0.5rem;
+        margin-bottom: 0.375rem;
+    }
+
+    .gw-story-card__category,
+    .gw-story-card__date {
+        font-size: 0.625rem;
+    }
+
+    .gw-story-card__title {
+        font-size: 1rem;
+        margin-bottom: 0.375rem;
+    }
+
+    .gw-story-card__excerpt {
+        font-size: 0.8125rem;
+        -webkit-line-clamp: 2;
+        margin-bottom: 0.75rem;
+    }
+}

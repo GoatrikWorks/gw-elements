@@ -138,8 +138,8 @@ class Contact_Info extends Widget_Base_GW {
                     [
                         'icon'    => 'mail',
                         'title'   => esc_html__( 'Email', 'gw-elements' ),
-                        'content' => 'info@laviasana.it',
-                        'link'    => [ 'url' => 'mailto:info@laviasana.it' ],
+                        'content' => 'contact@laviasana.com',
+                        'link'    => [ 'url' => 'mailto:contact@laviasana.com' ],
                     ],
                     [
                         'icon'    => 'clock',
