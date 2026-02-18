@@ -94,3 +94,41 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+/* Buttons */
+.gw-image-hero__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .gw-image-hero__buttons {
+        flex-direction: row;
+    }
+}
+
+.gw-image-hero--center .gw-image-hero__buttons {
+    justify-content: center;
+}
+
+.gw-image-hero--right .gw-image-hero__buttons {
+    justify-content: flex-end;
+}
+
+/* Mobile: reset alignment to left */
+@media (max-width: 767px) {
+    .gw-image-hero--right .gw-image-hero__content {
+        margin-left: 0;
+        text-align: left;
+    }
+
+    .gw-image-hero--right .gw-image-hero__buttons {
+        justify-content: flex-start;
+    }
+
+    .gw-image-hero__container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}

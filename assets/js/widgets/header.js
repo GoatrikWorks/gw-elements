@@ -7,8 +7,6 @@
   class GWHeader {
     constructor(element) {
       this.header = element;
-      this.menuToggle = element.querySelector('.gw-header__menu-toggle');
-      this.mobileNav = element.querySelector('.gw-header__mobile-nav');
       this.shouldShrink = element.dataset.shrink === 'true';
       this.isScrolled = false;
       this.scrollThreshold = 50;
@@ -26,41 +24,15 @@
     }
 
     init() {
-      if (this.menuToggle && this.mobileNav) {
-        this.menuToggle.addEventListener('click', () =>
-          this.toggleMobileMenu()
-        );
-      }
-
-      // Shrink on scroll (always listen if there's an announcement bar or shrink is enabled)
+      // Shrink on scroll
       if (this.shouldShrink || this.announcementBar) {
         this.handleScroll = this.handleScroll.bind(this);
         window.addEventListener('scroll', this.handleScroll, { passive: true });
-        // Check initial scroll position
         this.handleScroll();
       }
 
-      // Close mobile menu on resize
-      window.addEventListener('resize', () => {
-        if (
-          window.innerWidth >= 1024 &&
-          this.mobileNav &&
-          !this.mobileNav.hidden
-        ) {
-          this.closeMobileMenu();
-        }
-      });
-
-      // Close mobile menu on click outside
-      document.addEventListener('click', e => {
-        if (
-          this.mobileNav &&
-          !this.header.contains(e.target) &&
-          !this.mobileNav.hidden
-        ) {
-          this.closeMobileMenu();
-        }
-      });
+      // Build floating mobile menu
+      this.buildMobileMenu();
     }
 
     handleScroll() {
@@ -68,11 +40,8 @@
 
       if (scrolled !== this.isScrolled) {
         this.isScrolled = scrolled;
-
-        // Toggle header scrolled class (always for sticky + announcement)
         this.header.classList.toggle('gw-header--scrolled', scrolled);
 
-        // Hide/show announcement bar
         if (
           this.announcementBar &&
           this.announcementBar.classList.contains(
@@ -87,22 +56,117 @@
       }
     }
 
-    toggleMobileMenu() {
-      if (this.mobileNav.hidden) {
-        this.openMobileMenu();
-      } else {
-        this.closeMobileMenu();
+    buildMobileMenu() {
+      // Don't build on desktop
+      if (document.querySelector('.gw-mobile-menu-fab')) return;
+
+      // Collect nav items from desktop nav
+      const desktopNav = this.header.querySelector('.gw-header__nav--desktop');
+      if (!desktopNav) return;
+
+      const navLinks = desktopNav.querySelectorAll('.gw-header__link');
+      if (!navLinks.length) return;
+
+      // Create floating action button
+      const fab = document.createElement('button');
+      fab.className = 'gw-mobile-menu-fab';
+      fab.setAttribute('aria-label', 'Menu');
+      fab.setAttribute('aria-expanded', 'false');
+      fab.innerHTML = `
+        <svg class="gw-fab-icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        <svg class="gw-fab-icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      `;
+
+      // Create fullscreen overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'gw-mobile-menu-overlay';
+      overlay.setAttribute('data-open', 'false');
+
+      // Build nav list
+      const navList = document.createElement('ul');
+      navList.className = 'gw-mobile-menu-overlay__nav';
+
+      navLinks.forEach(link => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = link.href;
+        a.textContent = link.textContent;
+        a.addEventListener('click', () => this.closeMobileOverlay(fab, overlay));
+        li.appendChild(a);
+        navList.appendChild(li);
+      });
+
+      // Build action buttons (account + cart)
+      const actions = document.createElement('div');
+      actions.className = 'gw-mobile-menu-overlay__actions';
+
+      const accountBtn = this.header.querySelector('.gw-header__account-btn');
+      if (accountBtn) {
+        const a = document.createElement('a');
+        a.href = accountBtn.href;
+        a.className = 'gw-mobile-menu-overlay__action';
+        a.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Account`;
+        actions.appendChild(a);
       }
+
+      const cartBtn = this.header.querySelector('.gw-header__cart-btn');
+      if (cartBtn) {
+        const btn = document.createElement('button');
+        btn.className = 'gw-mobile-menu-overlay__action';
+        btn.setAttribute('type', 'button');
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg> Carrello`;
+        btn.addEventListener('click', () => {
+          this.closeMobileOverlay(fab, overlay);
+          // Trigger cart drawer
+          setTimeout(() => {
+            const cartTrigger = document.querySelector('[data-cart-drawer-trigger]');
+            if (cartTrigger) cartTrigger.click();
+          }, 300);
+        });
+        actions.appendChild(btn);
+      }
+
+      overlay.appendChild(navList);
+      overlay.appendChild(actions);
+
+      document.body.appendChild(overlay);
+      document.body.appendChild(fab);
+
+      // Toggle
+      fab.addEventListener('click', () => {
+        const isOpen = overlay.getAttribute('data-open') === 'true';
+        if (isOpen) {
+          this.closeMobileOverlay(fab, overlay);
+        } else {
+          this.openMobileOverlay(fab, overlay);
+        }
+      });
+
+      // Close on Escape
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && overlay.getAttribute('data-open') === 'true') {
+          this.closeMobileOverlay(fab, overlay);
+        }
+      });
+
+      // Close on resize to desktop
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024 && overlay.getAttribute('data-open') === 'true') {
+          this.closeMobileOverlay(fab, overlay);
+        }
+      });
     }
 
-    openMobileMenu() {
-      this.mobileNav.hidden = false;
-      this.menuToggle.setAttribute('aria-expanded', 'true');
+    openMobileOverlay(fab, overlay) {
+      overlay.setAttribute('data-open', 'true');
+      fab.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
     }
 
-    closeMobileMenu() {
-      this.mobileNav.hidden = true;
-      this.menuToggle.setAttribute('aria-expanded', 'false');
+    closeMobileOverlay(fab, overlay) {
+      overlay.setAttribute('data-open', 'false');
+      fab.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
     }
   }
 

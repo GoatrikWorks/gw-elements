@@ -20,11 +20,17 @@
 
 .gw-product-tabs__nav {
     display: flex;
-    gap: 2rem;
+    gap: 1.25rem;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     -ms-overflow-style: none;
+}
+
+@media (min-width: 768px) {
+    .gw-product-tabs__nav {
+        gap: 2rem;
+    }
 }
 
 .gw-product-tabs__nav::-webkit-scrollbar {

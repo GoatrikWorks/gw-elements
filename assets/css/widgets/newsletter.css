@@ -86,3 +86,20 @@
         flex-direction: row;
     }
 }
+
+/* Submit button should not shrink */
+.gw-newsletter__input-group .gw-button {
+    flex-shrink: 0;
+}
+
+/* iOS auto-zoom prevention */
+@media (max-width: 767px) {
+    .gw-newsletter__input,
+    .gw-newsletter .gw-input {
+        font-size: 16px;
+    }
+
+    .gw-newsletter {
+        padding: 1.5rem;
+    }
+}

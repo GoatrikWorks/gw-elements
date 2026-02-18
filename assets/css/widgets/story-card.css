@@ -12,6 +12,7 @@
     overflow: hidden;
     margin-bottom: 1rem;
     background-color: hsl(var(--gw-muted));
+    aspect-ratio: 16/10;
 }
 
 .gw-story-card__image img {

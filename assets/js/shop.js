@@ -1,21 +1,32 @@
 /**
- * GW Elements - Shop Page Enhancements
- * Filter drawer, view toggle, and enhanced UX
+ * GW Elements - Shop Page with Sidebar Filters
+ * Left sidebar with filters, product grid on right
  */
 (function () {
   'use strict';
 
-  class ShopEnhancements {
+  // Main product categories for LaViaSana
+  const MAIN_CATEGORIES = [
+    { name: 'Cura del corpo', slug: 'body-care' },
+    { name: 'Stimolanti energetici', slug: 'energy-boosters' },
+    { name: 'Purificazione', slug: 'cleansing' },
+    { name: 'Fitness', slug: 'body-fitness' },
+    { name: 'Cura dell\'anima', slug: 'soul-care' },
+    { name: 'Recupero', slug: 'recovery' },
+  ];
+
+  class ShopPage {
     constructor() {
-      this.filterDrawer = null;
-      this.filterToggle = null;
-      this.productsGrid = null;
+      this.sidebar = null;
+      this.mainContent = null;
+      this.mobileToggle = null;
+      this.categories = MAIN_CATEGORIES;
+      this.currentFilters = this.getFiltersFromURL();
 
       this.init();
     }
 
     init() {
-      // Wait for DOM
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', () => this.setup());
       } else {
@@ -33,318 +44,295 @@
         return;
       }
 
-      this.createShopControls();
-      this.createFilterDrawer();
+      this.createShopLayout();
       this.bindEvents();
     }
 
-    createShopControls() {
-      // Find existing WooCommerce elements
-      const resultCount = document.querySelector('.woocommerce-result-count');
-      const ordering = document.querySelector('.woocommerce-ordering');
+    getFiltersFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const path = window.location.pathname;
 
-      if (!resultCount && !ordering) return;
+      // Extract category from URL path
+      let category = '';
+      const catMatch = path.match(/\/product-category\/([^/]+)/);
+      if (catMatch) {
+        category = catMatch[1];
+      }
 
-      // Get parent container
-      const parent = resultCount?.parentElement || ordering?.parentElement;
-      if (!parent) return;
+      return {
+        category: category,
+        minPrice: params.get('min_price') || '',
+        maxPrice: params.get('max_price') || '',
+        orderby: params.get('orderby') || 'date',
+      };
+    }
 
-      // Create controls wrapper
-      const controlsWrapper = document.createElement('div');
-      controlsWrapper.className = 'gw-shop-controls';
+    createShopLayout() {
+      // Find WooCommerce content
+      const wcContent = document.querySelector('.woocommerce-products-header')?.parentElement
+                     || document.querySelector('ul.products')?.parentElement;
 
-      // Left side
-      const leftSide = document.createElement('div');
-      leftSide.className = 'gw-shop-controls__left';
+      if (!wcContent) return;
 
-      // Filter toggle button
-      const filterBtn = document.createElement('button');
-      filterBtn.type = 'button';
-      filterBtn.className = 'gw-filter-toggle';
-      filterBtn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      // Create shop wrapper
+      const shopWrapper = document.createElement('div');
+      shopWrapper.className = 'gw-shop-layout';
+
+      // Create sidebar
+      this.sidebar = document.createElement('aside');
+      this.sidebar.className = 'gw-shop-sidebar';
+      this.sidebar.innerHTML = this.getSidebarHTML();
+
+      // Create main content wrapper
+      this.mainContent = document.createElement('div');
+      this.mainContent.className = 'gw-shop-main';
+
+      // Move existing content to main
+      const header = wcContent.querySelector('.woocommerce-products-header');
+      const resultCount = wcContent.querySelector('.woocommerce-result-count');
+      const ordering = wcContent.querySelector('.woocommerce-ordering');
+      const products = wcContent.querySelector('ul.products');
+      const pagination = wcContent.querySelector('.woocommerce-pagination');
+
+      // Create top bar (only for mobile filter toggle and ordering)
+      const topBar = document.createElement('div');
+      topBar.className = 'gw-shop-topbar';
+
+      // Mobile filter toggle (only visible on mobile)
+      const mobileToggle = document.createElement('button');
+      mobileToggle.type = 'button';
+      mobileToggle.className = 'gw-shop-filter-toggle';
+      mobileToggle.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
         </svg>
         <span>Filtri</span>
       `;
-      this.filterToggle = filterBtn;
-      leftSide.appendChild(filterBtn);
+      this.mobileToggle = mobileToggle;
 
-      // Category pills (get from widgets if available)
-      const categoryPills = this.createCategoryPills();
-      if (categoryPills) {
-        leftSide.appendChild(categoryPills);
-      }
-
-      // Right side
-      const rightSide = document.createElement('div');
-      rightSide.className = 'gw-shop-controls__right';
-
-      // Move ordering dropdown
-      if (ordering) {
-        const select = ordering.querySelector('select');
-        if (select) {
-          select.style.cssText = '';
-        }
-        rightSide.appendChild(ordering);
-      }
-
-      // Assemble
-      controlsWrapper.appendChild(leftSide);
-      controlsWrapper.appendChild(rightSide);
-
-      // Product count row
+      // Top bar left (mobile toggle + result count)
+      const topBarLeft = document.createElement('div');
+      topBarLeft.className = 'gw-shop-topbar__left';
+      topBarLeft.appendChild(mobileToggle);
       if (resultCount) {
-        const countRow = document.createElement('div');
-        countRow.className = 'gw-product-count';
-        countRow.innerHTML = resultCount.innerHTML;
-        controlsWrapper.appendChild(countRow);
-        resultCount.remove();
+        resultCount.className = 'gw-shop-result-count';
+        topBarLeft.appendChild(resultCount);
       }
 
-      // Insert before products
-      const products = parent.querySelector('ul.products');
+      // Top bar right (ordering)
+      const topBarRight = document.createElement('div');
+      topBarRight.className = 'gw-shop-topbar__right';
+      if (ordering) {
+        ordering.className = 'gw-shop-ordering';
+        topBarRight.appendChild(ordering);
+      }
+
+      topBar.appendChild(topBarLeft);
+      topBar.appendChild(topBarRight);
+
+      // Assemble main content
+      this.mainContent.appendChild(topBar);
       if (products) {
-        products.before(controlsWrapper);
-        this.productsGrid = products;
-      } else {
-        parent.prepend(controlsWrapper);
+        products.className = 'products gw-shop-products';
+        this.mainContent.appendChild(products);
       }
+      if (pagination) this.mainContent.appendChild(pagination);
+
+      // Assemble layout
+      shopWrapper.appendChild(this.sidebar);
+      shopWrapper.appendChild(this.mainContent);
+
+      // Clear and rebuild content
+      wcContent.innerHTML = '';
+
+      // Add header above layout if exists
+      if (header) {
+        header.className = 'woocommerce-products-header gw-shop-header';
+        wcContent.appendChild(header);
+      }
+
+      // Add the shop layout
+      wcContent.appendChild(shopWrapper);
+
+      // Add body class
+      document.body.classList.add('gw-has-shop-sidebar');
     }
 
-    createCategoryPills() {
-      // Try to get categories from sidebar widget or build from current taxonomy
-      const categories = [];
+    getSidebarHTML() {
+      const currentPath = window.location.pathname;
+      const isShopRoot = currentPath === '/shop/' || currentPath === '/shop';
 
-      // Check for category widget
-      const categoryWidget = document.querySelector(
-        '.widget_product_categories ul'
-      );
-      if (categoryWidget) {
-        const items = categoryWidget.querySelectorAll('li > a');
-        items.forEach(item => {
-          categories.push({
-            name: item.textContent.trim(),
-            url: item.href,
-            active: item.parentElement.classList.contains('current-cat'),
-          });
-        });
-      }
-
-      if (categories.length === 0) return null;
-
-      const container = document.createElement('div');
-      container.className = 'gw-category-pills';
-
-      // Add "All" pill
-      const allPill = document.createElement('a');
-      allPill.href = '/shop/';
-      allPill.className = 'gw-category-pill';
-      if (!categories.some(c => c.active)) {
-        allPill.classList.add('gw-category-pill--active');
-      }
-      allPill.textContent = 'Tutti';
-      container.appendChild(allPill);
-
-      // Add category pills
-      categories.slice(0, 6).forEach(cat => {
-        const pill = document.createElement('a');
-        pill.href = cat.url;
-        pill.className = 'gw-category-pill';
-        if (cat.active) {
-          pill.classList.add('gw-category-pill--active');
-        }
-        pill.textContent = cat.name;
-        container.appendChild(pill);
-      });
-
-      return container;
-    }
-
-    createFilterDrawer() {
-      // Create drawer HTML
-      const drawer = document.createElement('div');
-      drawer.className = 'gw-filter-drawer';
-      drawer.id = 'gw-filter-drawer';
-      drawer.innerHTML = `
-        <div class="gw-filter-drawer__overlay"></div>
-        <div class="gw-filter-drawer__panel">
-          <div class="gw-filter-drawer__header">
-            <h3 class="gw-filter-drawer__title">Filtri</h3>
-            <button type="button" class="gw-filter-drawer__close" aria-label="Chiudi">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      let html = `
+        <div class="gw-shop-sidebar__inner">
+          <div class="gw-shop-sidebar__header">
+            <h3 class="gw-shop-sidebar__title">Filtri</h3>
+            <button type="button" class="gw-shop-sidebar__close" aria-label="Chiudi">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
               </svg>
             </button>
           </div>
-          <div class="gw-filter-drawer__content">
-            ${this.getFilterContent()}
-          </div>
-          <div class="gw-filter-drawer__footer">
-            <button type="button" class="gw-filter-drawer__clear">Cancella</button>
-            <button type="button" class="gw-filter-drawer__apply">Applica Filtri</button>
-          </div>
-        </div>
+
+          <div class="gw-shop-sidebar__content">
+            <!-- Categories -->
+            <div class="gw-filter-section">
+              <h4 class="gw-filter-section__title">Categorie</h4>
+              <ul class="gw-filter-list">
+                <li class="gw-filter-item">
+                  <a href="/shop/" class="gw-filter-link ${isShopRoot ? 'gw-filter-link--active' : ''}">
+                    <span class="gw-filter-link__name">Tutti i prodotti</span>
+                  </a>
+                </li>
       `;
 
-      document.body.appendChild(drawer);
-      this.filterDrawer = drawer;
-    }
+      this.categories.forEach(cat => {
+        const isActive = currentPath.includes(`/product-category/${cat.slug}`);
+        html += `
+                <li class="gw-filter-item">
+                  <a href="/product-category/${cat.slug}/" class="gw-filter-link ${isActive ? 'gw-filter-link--active' : ''}">
+                    <span class="gw-filter-link__name">${cat.name}</span>
+                  </a>
+                </li>
+        `;
+      });
 
-    getFilterContent() {
-      let content = '';
-
-      // Categories
-      const categoryWidget = document.querySelector(
-        '.widget_product_categories'
-      );
-      if (categoryWidget) {
-        const categories = categoryWidget.querySelectorAll('li');
-        if (categories.length > 0) {
-          content += `
-            <div class="gw-filter-group">
-              <h4 class="gw-filter-group__title">Categorie</h4>
-              <ul class="gw-filter-group__list">
-          `;
-          categories.forEach(cat => {
-            const link = cat.querySelector('a');
-            const count = cat.querySelector('.count');
-            const isActive = cat.classList.contains('current-cat');
-            content += `
-              <li class="gw-filter-group__item">
-                <label class="gw-filter-group__label">
-                  <input type="checkbox" class="gw-filter-group__checkbox" data-url="${
-                    link?.href || '#'
-                  }" ${isActive ? 'checked' : ''}>
-                  ${link?.textContent.trim() || ''}
-                  ${
-                    count
-                      ? `<span class="gw-filter-group__count">${count.textContent}</span>`
-                      : ''
-                  }
-                </label>
-              </li>
-            `;
-          });
-          content += `
+      html += `
               </ul>
             </div>
-          `;
-        }
-      }
 
-      // Price filter
-      const priceWidget = document.querySelector('.widget_price_filter');
-      if (priceWidget) {
-        content += `
-          <div class="gw-filter-group">
-            <h4 class="gw-filter-group__title">Prezzo</h4>
-            <div class="gw-price-range">
-              <div class="gw-price-range__inputs">
-                <input type="number" class="gw-price-range__input" placeholder="Min" min="0">
-                <span class="gw-price-range__separator">—</span>
-                <input type="number" class="gw-price-range__input" placeholder="Max">
+            <!-- Price Filter -->
+            <div class="gw-filter-section">
+              <h4 class="gw-filter-section__title">Prezzo</h4>
+              <div class="gw-price-filter">
+                <div class="gw-price-filter__inputs">
+                  <div class="gw-price-filter__field">
+                    <span class="gw-price-filter__currency">€</span>
+                    <input type="number"
+                           class="gw-price-filter__input"
+                           id="gw-min-price"
+                           placeholder="Min"
+                           min="0"
+                           value="${this.currentFilters.minPrice}">
+                  </div>
+                  <span class="gw-price-filter__separator">–</span>
+                  <div class="gw-price-filter__field">
+                    <span class="gw-price-filter__currency">€</span>
+                    <input type="number"
+                           class="gw-price-filter__input"
+                           id="gw-max-price"
+                           placeholder="Max"
+                           value="${this.currentFilters.maxPrice}">
+                  </div>
+                </div>
+                <button type="button" class="gw-price-filter__apply" id="gw-apply-price">
+                  Applica
+                </button>
               </div>
             </div>
           </div>
-        `;
-      }
 
-      // If no filters found, show message
-      if (!content) {
-        content = `
-          <div style="text-align: center; padding: 2rem 0; color: hsl(var(--gw-muted-foreground));">
-            <p>Nessun filtro disponibile</p>
+          <!-- Mobile footer -->
+          <div class="gw-shop-sidebar__footer">
+            <button type="button" class="gw-shop-sidebar__clear">Cancella tutto</button>
+            <button type="button" class="gw-shop-sidebar__apply">Mostra risultati</button>
           </div>
-        `;
-      }
+        </div>
+        <div class="gw-shop-sidebar__overlay"></div>
+      `;
 
-      return content;
+      return html;
     }
 
     bindEvents() {
-      // Filter toggle
-      if (this.filterToggle) {
-        this.filterToggle.addEventListener('click', () => this.openDrawer());
+      // Mobile toggle
+      if (this.mobileToggle) {
+        this.mobileToggle.addEventListener('click', () => this.openSidebar());
       }
 
-      // Filter drawer events
-      if (this.filterDrawer) {
-        const overlay = this.filterDrawer.querySelector(
-          '.gw-filter-drawer__overlay'
-        );
-        const closeBtn = this.filterDrawer.querySelector(
-          '.gw-filter-drawer__close'
-        );
-        const applyBtn = this.filterDrawer.querySelector(
-          '.gw-filter-drawer__apply'
-        );
-        const clearBtn = this.filterDrawer.querySelector(
-          '.gw-filter-drawer__clear'
-        );
+      // Sidebar close button
+      const closeBtn = this.sidebar?.querySelector('.gw-shop-sidebar__close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => this.closeSidebar());
+      }
 
-        overlay?.addEventListener('click', () => this.closeDrawer());
-        closeBtn?.addEventListener('click', () => this.closeDrawer());
-        applyBtn?.addEventListener('click', () => this.applyFilters());
-        clearBtn?.addEventListener('click', () => this.clearFilters());
+      // Overlay click
+      const overlay = this.sidebar?.querySelector('.gw-shop-sidebar__overlay');
+      if (overlay) {
+        overlay.addEventListener('click', () => this.closeSidebar());
+      }
 
-        // Escape key
-        document.addEventListener('keydown', e => {
-          if (
-            e.key === 'Escape' &&
-            this.filterDrawer.classList.contains('gw-filter-drawer--open')
-          ) {
-            this.closeDrawer();
+      // Price filter apply
+      const priceApply = this.sidebar?.querySelector('#gw-apply-price');
+      if (priceApply) {
+        priceApply.addEventListener('click', () => this.applyPriceFilter());
+      }
+
+      // Price input enter key
+      const priceInputs = this.sidebar?.querySelectorAll('.gw-price-filter__input');
+      priceInputs?.forEach(input => {
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            this.applyPriceFilter();
           }
         });
+      });
+
+      // Mobile footer buttons
+      const clearBtn = this.sidebar?.querySelector('.gw-shop-sidebar__clear');
+      const applyBtn = this.sidebar?.querySelector('.gw-shop-sidebar__apply');
+
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          window.location.href = '/shop/';
+        });
       }
-    }
 
-    openDrawer() {
-      if (this.filterDrawer) {
-        this.filterDrawer.classList.add('gw-filter-drawer--open');
-        document.body.style.overflow = 'hidden';
+      if (applyBtn) {
+        applyBtn.addEventListener('click', () => this.closeSidebar());
       }
-    }
 
-    closeDrawer() {
-      if (this.filterDrawer) {
-        this.filterDrawer.classList.remove('gw-filter-drawer--open');
-        document.body.style.overflow = '';
-      }
-    }
-
-    applyFilters() {
-      // Get checked categories
-      const checkedCategories = this.filterDrawer.querySelectorAll(
-        '.gw-filter-group__checkbox:checked'
-      );
-
-      if (checkedCategories.length > 0) {
-        // Navigate to first checked category
-        const firstChecked = checkedCategories[0];
-        const url = firstChecked.dataset.url;
-        if (url && url !== '#') {
-          window.location.href = url;
-          return;
+      // Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.sidebar?.classList.contains('gw-shop-sidebar--open')) {
+          this.closeSidebar();
         }
-      }
-
-      this.closeDrawer();
+      });
     }
 
-    clearFilters() {
-      // Uncheck all
-      const checkboxes = this.filterDrawer.querySelectorAll(
-        '.gw-filter-group__checkbox'
-      );
-      checkboxes.forEach(cb => (cb.checked = false));
+    openSidebar() {
+      this.sidebar?.classList.add('gw-shop-sidebar--open');
+      document.body.style.overflow = 'hidden';
+    }
 
-      // Navigate to shop
-      window.location.href = '/shop/';
+    closeSidebar() {
+      this.sidebar?.classList.remove('gw-shop-sidebar--open');
+      document.body.style.overflow = '';
+    }
+
+    applyPriceFilter() {
+      const minPrice = this.sidebar?.querySelector('#gw-min-price')?.value;
+      const maxPrice = this.sidebar?.querySelector('#gw-max-price')?.value;
+
+      const params = new URLSearchParams(window.location.search);
+
+      if (minPrice) {
+        params.set('min_price', minPrice);
+      } else {
+        params.delete('min_price');
+      }
+
+      if (maxPrice) {
+        params.set('max_price', maxPrice);
+      } else {
+        params.delete('max_price');
+      }
+
+      const queryString = params.toString();
+      const baseUrl = window.location.pathname;
+      window.location.href = queryString ? `${baseUrl}?${queryString}` : baseUrl;
     }
   }
 
   // Initialize
-  new ShopEnhancements();
+  new ShopPage();
 })();

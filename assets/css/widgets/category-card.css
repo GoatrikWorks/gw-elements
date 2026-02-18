@@ -12,6 +12,7 @@
 .gw-category-card__image {
     position: relative;
     background-color: hsl(var(--gw-muted));
+    aspect-ratio: 3/4;
 }
 
 .gw-category-card__image img {

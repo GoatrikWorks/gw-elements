@@ -21,7 +21,14 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
+  .gw-footer__main {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
   .gw-footer__main {
     grid-template-columns: 2fr 1fr 1fr 1fr;
     gap: 3rem;

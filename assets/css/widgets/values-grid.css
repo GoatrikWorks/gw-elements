@@ -60,14 +60,10 @@
   }
 }
 
-/* 3-4 columns on tablet */
+/* 3 columns on tablet, 4 stays at 2 on tablet */
 @media (min-width: 768px) {
   .gw-values-grid__items--cols-3 {
     grid-template-columns: repeat(3, 1fr);
-  }
-
-  .gw-values-grid__items--cols-4 {
-    grid-template-columns: repeat(4, 1fr);
   }
 }
 

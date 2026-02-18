@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "Bash(wp term list:*)",
+      "Bash(mysql:*)",
+      "WebFetch(domain:dutchhealthstore.com)",
+      "Bash(find:*)",
+      "Bash(xargs ls:*)",
+      "Bash(grep:*)"
+    ]
+  }
+}

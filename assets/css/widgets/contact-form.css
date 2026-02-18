@@ -166,3 +166,12 @@
     margin-left: auto;
     margin-right: 0;
 }
+
+/* iOS auto-zoom prevention: inputs must be 16px minimum on mobile */
+@media (max-width: 767px) {
+    .gw-contact-form .gw-input,
+    .gw-contact-form .gw-textarea,
+    .gw-contact-form select {
+        font-size: 16px;
+    }
+}

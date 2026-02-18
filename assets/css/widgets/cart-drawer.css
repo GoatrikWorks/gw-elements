@@ -232,8 +232,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 1.75rem;
-    height: 1.75rem;
+    width: 2.5rem;
+    height: 2.5rem;
     padding: 0;
     background: var(--gw-background, #ffffff);
     border: 1px solid var(--gw-border, #e5e5e5);
@@ -276,6 +276,7 @@
 /* Footer */
 .gw-cart-drawer__footer {
     padding: 1rem 1.5rem;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid var(--gw-border, #e5e5e5);
     background-color: #ffffff;
 }

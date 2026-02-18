@@ -125,26 +125,10 @@ class Contact_Info extends Widget_Base_GW {
                 'fields'      => $repeater->get_controls(),
                 'default'     => [
                     [
-                        'icon'    => 'map-pin',
-                        'title'   => esc_html__( 'Indirizzo', 'gw-elements' ),
-                        'content' => esc_html__( "Via del Benessere, 123\n00100 Roma, Italia", 'gw-elements' ),
-                    ],
-                    [
-                        'icon'    => 'phone',
-                        'title'   => esc_html__( 'Telefono', 'gw-elements' ),
-                        'content' => '+39 06 123 4567',
-                        'link'    => [ 'url' => 'tel:+390612345567' ],
-                    ],
-                    [
                         'icon'    => 'mail',
                         'title'   => esc_html__( 'Email', 'gw-elements' ),
                         'content' => 'contact@laviasana.com',
                         'link'    => [ 'url' => 'mailto:contact@laviasana.com' ],
-                    ],
-                    [
-                        'icon'    => 'clock',
-                        'title'   => esc_html__( 'Orari', 'gw-elements' ),
-                        'content' => esc_html__( "Lun - Ven: 9:00 - 18:00\nSab: 10:00 - 14:00", 'gw-elements' ),
                     ],
                 ],
                 'title_field' => '{{{ title }}}',
