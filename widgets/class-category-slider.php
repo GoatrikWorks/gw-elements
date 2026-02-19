@@ -246,16 +246,28 @@ class Category_Slider extends Widget_Base_GW {
                 'fields'      => $repeater->get_controls(),
                 'default'     => [
                     [
-                        'title'       => 'Integratori',
-                        'description' => 'Supplementi naturali per la tua salute',
+                        'title'       => 'Cura del corpo',
+                        'description' => 'Prodotti naturali per la cura quotidiana del corpo',
                     ],
                     [
-                        'title'       => 'Vini & Bio',
-                        'description' => 'Vini biologici certificati',
+                        'title'       => 'Stimolanti energetici',
+                        'description' => 'Integratori e bevande per energia e vitalità',
                     ],
                     [
-                        'title'       => 'Saponi',
-                        'description' => 'Cura del corpo naturale',
+                        'title'       => 'Purificazione',
+                        'description' => 'Purificazione e igiene naturale del corpo',
+                    ],
+                    [
+                        'title'       => 'Fitness',
+                        'description' => 'Prodotti per il benessere fisico e la forma',
+                    ],
+                    [
+                        'title'       => 'Cura dell\'anima',
+                        'description' => 'Vini biologici e prodotti per il benessere interiore',
+                    ],
+                    [
+                        'title'       => 'Recupero',
+                        'description' => 'Materassi e prodotti per il riposo e il recupero',
                     ],
                 ],
                 'title_field' => '{{{ title }}}',
@@ -384,8 +396,8 @@ class Category_Slider extends Widget_Base_GW {
             'perPage'     => 4,
             'perMove'     => 1,
             'gap'         => '1rem',
-            'pagination'  => 'yes' === $settings['show_dots'],
-            'arrows'      => 'yes' === $settings['show_arrows'],
+            'pagination'  => false,
+            'arrows'      => false,
             'autoplay'    => 'yes' === $settings['autoplay'],
             'interval'    => (int) $settings['autoplay_delay'],
             'pauseOnHover' => true,
