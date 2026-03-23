@@ -26,11 +26,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
-define( 'GW_ELEMENTS_VERSION', '1.0.41' );
+define( 'GW_ELEMENTS_VERSION', '1.0.42' );
 define( 'GW_ELEMENTS_FILE', __FILE__ );
 define( 'GW_ELEMENTS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'GW_ELEMENTS_URL', plugin_dir_url( __FILE__ ) );
 define( 'GW_ELEMENTS_ASSETS_URL', GW_ELEMENTS_URL . 'assets/' );
+
+// Load i18n and translation store early — must run before WordPress parses the request.
+require_once GW_ELEMENTS_PATH . 'includes/class-gw-translation-store.php';
+require_once GW_ELEMENTS_PATH . 'includes/class-gw-i18n.php';
+require_once GW_ELEMENTS_PATH . 'includes/class-gw-admin.php';
+\GW_I18n::init_early();
 
 /**
  * Autoloader for plugin classes.
@@ -115,6 +121,14 @@ final class Plugin {
 
         // Load text domain.
         load_plugin_textdomain( 'gw-elements', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+
+        // Initialize i18n (singleton boots translation hooks).
+        \GW_I18n::instance();
+
+        // Initialize admin translations page.
+        if ( is_admin() ) {
+            \GW_Admin::instance();
+        }
 
         // Initialize components.
         Assets::instance();

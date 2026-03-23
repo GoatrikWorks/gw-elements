@@ -449,10 +449,34 @@ class Header extends Widget_Base_GW {
             $announcement_class .= ' gw-header__announcement--sticky';
         }
         ?>
+        <?php
+        $i18n = \GW_I18n::instance();
+        $current_lang = $i18n->get_lang();
+        ?>
         <?php if ( $show_announcement && ! empty( $announcement_text ) ) : ?>
         <div class="<?php echo esc_attr( $announcement_class ); ?>">
             <div class="gw-header__announcement-content">
                 <span><?php echo esc_html( $announcement_text ); ?></span>
+            </div>
+            <?php
+            $all_langs = \GW_I18n::get_all_languages();
+            $lang_flags = [
+                'it' => "\u{1F1EE}\u{1F1F9}",
+                'en' => "\u{1F1EC}\u{1F1E7}",
+                'de' => "\u{1F1E9}\u{1F1EA}",
+                'fr' => "\u{1F1EB}\u{1F1F7}",
+            ];
+            $lang_data = [];
+            foreach ( $all_langs as $code => $label ) {
+                $lang_data[ $code ] = $i18n->get_lang_url( $code );
+            }
+            ?>
+            <div class="gw-header__lang-switcher" data-languages="<?php echo esc_attr( wp_json_encode( $lang_data ) ); ?>" data-flags="<?php echo esc_attr( wp_json_encode( $lang_flags ) ); ?>">
+                <?php foreach ( $all_langs as $code => $label ) : ?>
+                    <a href="<?php echo esc_url( $lang_data[ $code ] ); ?>" class="gw-header__lang<?php echo $code === $current_lang ? ' is-active' : ''; ?>" title="<?php echo esc_attr( $label ); ?>">
+                        <span class="gw-header__lang-flag"><?php echo $lang_flags[ $code ] ?? ''; ?></span><?php echo esc_html( strtoupper( $code ) ); ?>
+                    </a>
+                <?php endforeach; ?>
             </div>
         </div>
         <?php endif; ?>

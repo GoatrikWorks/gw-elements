@@ -106,14 +106,14 @@ $category_name = $categories && ! is_wp_error( $categories ) ? $categories[0]->n
                         <path d="M11 14h10c.6 0 1 .4 1 1v4c0 .6-.4 1-1 1H11c-.6 0-1-.4-1-1v-4c0-.6.4-1 1-1z"/>
                         <path d="M14 17h4"/>
                     </svg>
-                    <span><?php esc_html_e( 'Fri frakt över 500kr', 'gw-elements' ); ?></span>
+                    <span><?php echo esc_html( 'Spedizione gratuita oltre €50' ); ?></span>
                 </div>
                 <div class="gw-trust-badge">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
                         <path d="m9 12 2 2 4-4"/>
                     </svg>
-                    <span><?php esc_html_e( 'Säker betalning', 'gw-elements' ); ?></span>
+                    <span><?php echo esc_html( 'Pagamento sicuro' ); ?></span>
                 </div>
                 <div class="gw-trust-badge">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -121,7 +121,7 @@ $category_name = $categories && ! is_wp_error( $categories ) ? $categories[0]->n
                         <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/>
                         <path d="M12 3v6"/>
                     </svg>
-                    <span><?php esc_html_e( '14 dagars öppet köp', 'gw-elements' ); ?></span>
+                    <span><?php echo esc_html( '14 giorni di reso' ); ?></span>
                 </div>
             </div>
 
@@ -129,14 +129,14 @@ $category_name = $categories && ! is_wp_error( $categories ) ? $categories[0]->n
             <div class="gw-single-product__meta">
                 <?php if ( $product->get_sku() ) : ?>
                     <div class="gw-single-product__meta-item">
-                        <span class="gw-single-product__meta-label"><?php esc_html_e( 'Artikelnr:', 'gw-elements' ); ?></span>
+                        <span class="gw-single-product__meta-label"><?php echo esc_html( 'Articolo n.:' ); ?></span>
                         <span class="gw-single-product__meta-value"><?php echo esc_html( $product->get_sku() ); ?></span>
                     </div>
                 <?php endif; ?>
 
                 <?php if ( $categories && ! is_wp_error( $categories ) ) : ?>
                     <div class="gw-single-product__meta-item">
-                        <span class="gw-single-product__meta-label"><?php esc_html_e( 'Kategori:', 'gw-elements' ); ?></span>
+                        <span class="gw-single-product__meta-label"><?php echo esc_html( 'Categoria:' ); ?></span>
                         <span class="gw-single-product__meta-value">
                             <?php
                             $category_links = array();
@@ -154,7 +154,7 @@ $category_name = $categories && ! is_wp_error( $categories ) ? $categories[0]->n
                 if ( $tags && ! is_wp_error( $tags ) ) :
                 ?>
                     <div class="gw-single-product__meta-item">
-                        <span class="gw-single-product__meta-label"><?php esc_html_e( 'Taggar:', 'gw-elements' ); ?></span>
+                        <span class="gw-single-product__meta-label"><?php echo esc_html( 'Tag:' ); ?></span>
                         <span class="gw-single-product__meta-value">
                             <?php
                             $tag_links = array();
@@ -177,11 +177,11 @@ $category_name = $categories && ! is_wp_error( $categories ) ? $categories[0]->n
         <div class="gw-single-product__tabs">
             <div class="gw-single-product__tabs-nav">
                 <button type="button" class="gw-single-product__tab-btn is-active" data-tab="description">
-                    <?php esc_html_e( 'Beskrivning', 'gw-elements' ); ?>
+                    <?php echo esc_html( 'Descrizione' ); ?>
                 </button>
                 <?php if ( $product->has_attributes() ) : ?>
                     <button type="button" class="gw-single-product__tab-btn" data-tab="additional">
-                        <?php esc_html_e( 'Ytterligare information', 'gw-elements' ); ?>
+                        <?php echo esc_html( 'Informazioni aggiuntive' ); ?>
                     </button>
                 <?php endif; ?>
             </div>
@@ -208,7 +208,7 @@ $category_name = $categories && ! is_wp_error( $categories ) ? $categories[0]->n
     if ( ! empty( $related_products ) ) :
     ?>
         <div class="gw-single-product__related">
-            <h2 class="gw-single-product__related-title"><?php esc_html_e( 'Relaterade produkter', 'gw-elements' ); ?></h2>
+            <h2 class="gw-single-product__related-title"><?php echo esc_html( 'Prodotti correlati' ); ?></h2>
             <div class="gw-single-product__related-grid">
                 <?php
                 foreach ( $related_products as $related_id ) {

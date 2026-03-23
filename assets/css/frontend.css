@@ -4167,14 +4167,19 @@ ul.products li.product.last {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Product Image */
+/* Product Image — force square, fill entire area */
 .woocommerce ul.products li.product a img,
 .woocommerce ul.products li.product > a > img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1;
+  object-fit: contain !important;
+  object-position: center;
   border-radius: 0;
   margin-bottom: 0;
+  display: block;
+  background-color: hsl(var(--gw-secondary, 0 0% 96%));
+  padding: 0.5rem;
 }
 
 /* Product Category */

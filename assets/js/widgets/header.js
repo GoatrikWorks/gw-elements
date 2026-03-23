@@ -20,16 +20,21 @@
         this.announcementBar = null;
       }
 
+      this.lastScrollY = 0;
       this.init();
     }
 
     init() {
-      // Shrink on scroll
+      // Always listen to scroll for shrink + mobile hide
       if (this.shouldShrink || this.announcementBar) {
         this.handleScroll = this.handleScroll.bind(this);
         window.addEventListener('scroll', this.handleScroll, { passive: true });
         this.handleScroll();
       }
+
+      // Mobile: hide header on scroll down, show on scroll up
+      this.handleMobileScroll = this.handleMobileScroll.bind(this);
+      window.addEventListener('scroll', this.handleMobileScroll, { passive: true });
 
       // Build floating mobile menu
       this.buildMobileMenu();
@@ -54,6 +59,35 @@
           );
         }
       }
+    }
+
+    handleMobileScroll() {
+      // Only on mobile
+      if (window.innerWidth >= 1024) {
+        this.header.classList.remove('gw-header--hidden');
+        this.lastScrollY = window.scrollY;
+        return;
+      }
+
+      const currentY = window.scrollY;
+
+      if (currentY > this.scrollThreshold) {
+        if (currentY > this.lastScrollY) {
+          // Scrolling down - hide
+          this.header.classList.add('gw-header--hidden');
+          if (this.announcementBar) {
+            this.announcementBar.classList.add('gw-announcement--hidden');
+          }
+        } else {
+          // Scrolling up - show
+          this.header.classList.remove('gw-header--hidden');
+        }
+      } else {
+        // At top - always show
+        this.header.classList.remove('gw-header--hidden');
+      }
+
+      this.lastScrollY = currentY;
     }
 
     buildMobileMenu() {
@@ -96,9 +130,25 @@
         navList.appendChild(li);
       });
 
-      // Build action buttons (account + cart)
+      // Build action buttons (search + account + cart)
       const actions = document.createElement('div');
       actions.className = 'gw-mobile-menu-overlay__actions';
+
+      const searchBtn = this.header.querySelector('.gw-header__search-btn');
+      if (searchBtn) {
+        const btn = document.createElement('button');
+        btn.className = 'gw-mobile-menu-overlay__action';
+        btn.setAttribute('type', 'button');
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg> Cerca`;
+        btn.addEventListener('click', () => {
+          this.closeMobileOverlay(fab, overlay);
+          setTimeout(() => {
+            const trigger = document.querySelector('[data-search-modal-trigger]');
+            if (trigger) trigger.click();
+          }, 300);
+        });
+        actions.appendChild(btn);
+      }
 
       const accountBtn = this.header.querySelector('.gw-header__account-btn');
       if (accountBtn) {
@@ -106,6 +156,7 @@
         a.href = accountBtn.href;
         a.className = 'gw-mobile-menu-overlay__action';
         a.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Account`;
+        a.addEventListener('click', () => this.closeMobileOverlay(fab, overlay));
         actions.appendChild(a);
       }
 
@@ -124,6 +175,26 @@
           }, 300);
         });
         actions.appendChild(btn);
+      }
+
+      // Language switcher (may be in announcement bar, a sibling of header)
+      const langSwitcher = document.querySelector('.gw-header__lang-switcher');
+      if (langSwitcher) {
+        const langDiv = document.createElement('div');
+        langDiv.className = 'gw-mobile-menu-overlay__lang';
+        try {
+          const languages = JSON.parse(langSwitcher.dataset.languages || '{}');
+          const flags = JSON.parse(langSwitcher.dataset.flags || '{}');
+          const activeLink = langSwitcher.querySelector('.gw-header__lang.is-active');
+          const activeLang = activeLink ? activeLink.textContent.trim().replace(/[^\w]/g, '').toLowerCase() : 'it';
+          const codes = Object.keys(languages);
+          langDiv.innerHTML = codes.map((code) => {
+            const active = code === activeLang ? ' is-active' : '';
+            const flag = flags[code] || '';
+            return `<a href="${languages[code]}" class="gw-mobile-menu-overlay__lang-link${active}"><span class="gw-mobile-menu-overlay__lang-flag">${flag}</span>${code.toUpperCase()}</a>`;
+          }).join('');
+        } catch (e) { /* fallback: no switcher */ }
+        overlay.appendChild(langDiv);
       }
 
       overlay.appendChild(navList);
@@ -158,15 +229,19 @@
     }
 
     openMobileOverlay(fab, overlay) {
+      this.savedScrollY = window.scrollY;
+      document.body.style.top = `-${this.savedScrollY}px`;
+      document.documentElement.classList.add('gw-menu-open');
       overlay.setAttribute('data-open', 'true');
       fab.setAttribute('aria-expanded', 'true');
-      document.body.style.overflow = 'hidden';
     }
 
     closeMobileOverlay(fab, overlay) {
       overlay.setAttribute('data-open', 'false');
       fab.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
+      document.documentElement.classList.remove('gw-menu-open');
+      document.body.style.top = '';
+      window.scrollTo(0, this.savedScrollY || 0);
     }
   }
 

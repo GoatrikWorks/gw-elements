@@ -1,0 +1,21 @@
+*LaViaSana Website Update*
+
+*Mobile Menu*
+• New floating menu button (bottom-right corner) that opens a fullscreen navigation overlay
+• Includes Search, Account, and Cart access
+• Header auto-hides on scroll down, reappears on scroll up
+• Logo centered on mobile
+
+*Categories*
+• Homepage slider updated with the 6 main categories: Cura del corpo, Stimolanti energetici, Purificazione del corpo, Fitness, Cura dell'anima, Recupero
+• Each with thumbnail image and description
+
+*Contact Page*
+• Simplified — only email (info@laviasana.com) shown
+• Clean centered layout with contact form
+
+*Footer*
+• Fully mobile-responsive with centered layout on small screens
+
+*General*
+• All pages responsive across mobile, tablet, and desktop

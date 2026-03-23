@@ -5,14 +5,17 @@
 (function () {
   'use strict';
 
+  // Translations (populated by wp_localize_script, fallback to Italian)
+  const t = window.gwShopI18n || {};
+
   // Main product categories for LaViaSana
   const MAIN_CATEGORIES = [
-    { name: 'Cura del corpo', slug: 'body-care' },
-    { name: 'Stimolanti energetici', slug: 'energy-boosters' },
-    { name: 'Purificazione', slug: 'cleansing' },
-    { name: 'Fitness', slug: 'body-fitness' },
-    { name: 'Cura dell\'anima', slug: 'soul-care' },
-    { name: 'Recupero', slug: 'recovery' },
+    { name: t.catBodyCare || 'Cura del corpo', slug: 'body-care' },
+    { name: t.catEnergy || 'Stimolanti energetici', slug: 'energy-boosters' },
+    { name: t.catCleansing || 'Purificazione', slug: 'cleansing' },
+    { name: t.catFitness || 'Fitness', slug: 'body-fitness' },
+    { name: t.catSoulCare || 'Cura dell\'anima', slug: 'soul-care' },
+    { name: t.catRecovery || 'Recupero', slug: 'recovery' },
   ];
 
   class ShopPage {
@@ -106,7 +109,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
         </svg>
-        <span>Filtri</span>
+        <span>${t.filters || 'Filtri'}</span>
       `;
       this.mobileToggle = mobileToggle;
 
@@ -160,13 +163,15 @@
 
     getSidebarHTML() {
       const currentPath = window.location.pathname;
-      const isShopRoot = currentPath === '/shop/' || currentPath === '/shop';
+      // Strip language prefix for shop root check
+      const cleanPath = currentPath.replace(/^\/(en|de|fr)\//, '/');
+      const isShopRoot = cleanPath === '/shop/' || cleanPath === '/shop';
 
       let html = `
         <div class="gw-shop-sidebar__inner">
           <div class="gw-shop-sidebar__header">
-            <h3 class="gw-shop-sidebar__title">Filtri</h3>
-            <button type="button" class="gw-shop-sidebar__close" aria-label="Chiudi">
+            <h3 class="gw-shop-sidebar__title">${t.filters || 'Filtri'}</h3>
+            <button type="button" class="gw-shop-sidebar__close" aria-label="${t.close || 'Chiudi'}">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
               </svg>
@@ -176,11 +181,11 @@
           <div class="gw-shop-sidebar__content">
             <!-- Categories -->
             <div class="gw-filter-section">
-              <h4 class="gw-filter-section__title">Categorie</h4>
+              <h4 class="gw-filter-section__title">${t.categories || 'Categorie'}</h4>
               <ul class="gw-filter-list">
                 <li class="gw-filter-item">
                   <a href="/shop/" class="gw-filter-link ${isShopRoot ? 'gw-filter-link--active' : ''}">
-                    <span class="gw-filter-link__name">Tutti i prodotti</span>
+                    <span class="gw-filter-link__name">${t.allProducts || 'Tutti i prodotti'}</span>
                   </a>
                 </li>
       `;
@@ -202,7 +207,7 @@
 
             <!-- Price Filter -->
             <div class="gw-filter-section">
-              <h4 class="gw-filter-section__title">Prezzo</h4>
+              <h4 class="gw-filter-section__title">${t.price || 'Prezzo'}</h4>
               <div class="gw-price-filter">
                 <div class="gw-price-filter__inputs">
                   <div class="gw-price-filter__field">
@@ -225,7 +230,7 @@
                   </div>
                 </div>
                 <button type="button" class="gw-price-filter__apply" id="gw-apply-price">
-                  Applica
+                  ${t.apply || 'Applica'}
                 </button>
               </div>
             </div>
@@ -233,8 +238,8 @@
 
           <!-- Mobile footer -->
           <div class="gw-shop-sidebar__footer">
-            <button type="button" class="gw-shop-sidebar__clear">Cancella tutto</button>
-            <button type="button" class="gw-shop-sidebar__apply">Mostra risultati</button>
+            <button type="button" class="gw-shop-sidebar__clear">${t.clearAll || 'Cancella tutto'}</button>
+            <button type="button" class="gw-shop-sidebar__apply">${t.showResults || 'Mostra risultati'}</button>
           </div>
         </div>
         <div class="gw-shop-sidebar__overlay"></div>

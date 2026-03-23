@@ -224,6 +224,39 @@ class Assets {
         // Enqueue shop enhancements on WooCommerce shop pages.
         if ( function_exists( 'is_shop' ) && ( is_shop() || is_product_category() || is_product_tag() ) ) {
             wp_enqueue_script( 'gw-shop' );
+
+            // Pass translated strings to shop JS.
+            $i18n = \GW_I18n::instance();
+            $map = [
+                'filters'       => 'Filtri',
+                'close'         => 'Chiudi',
+                'categories'    => 'Categorie',
+                'allProducts'   => 'Tutti i prodotti',
+                'price'         => 'Prezzo',
+                'apply'         => 'Applica',
+                'clearAll'      => 'Cancella tutto',
+                'showResults'   => 'Mostra risultati',
+                'catBodyCare'   => 'Cura del corpo',
+                'catEnergy'     => 'Stimolanti energetici',
+                'catCleansing'  => 'Purificazione',
+                'catFitness'    => 'Fitness',
+                'catSoulCare'   => "Cura dell'anima",
+                'catRecovery'   => 'Recupero',
+            ];
+
+            $shop_strings = $map; // Default: Italian values.
+
+            if ( $i18n->is_translated() ) {
+                $store = \GW_Translation_Store::instance();
+                $translations = $store->get_translations( $i18n->get_lang() );
+                foreach ( $map as $key => $italian ) {
+                    if ( isset( $translations[ $italian ] ) ) {
+                        $shop_strings[ $key ] = $translations[ $italian ];
+                    }
+                }
+            }
+
+            wp_localize_script( 'gw-shop', 'gwShopI18n', $shop_strings );
         }
 
         // Enqueue single product JS on product pages.

@@ -5,11 +5,13 @@
 .gw-contact-info__items {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 1.5rem;
 }
 
 .gw-contact-info__item {
     display: flex;
+    align-items: center;
     gap: 1rem;
     text-decoration: none;
     color: inherit;

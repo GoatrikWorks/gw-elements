@@ -579,6 +579,25 @@ class Footer extends Widget_Base_GW {
                             <?php endforeach; ?>
                         </ul>
                     <?php endif; ?>
+                    <?php
+                    $i18n = \GW_I18n::instance();
+                    $current_lang = $i18n->get_lang();
+                    $lang_flags = [
+                        'it' => "\u{1F1EE}\u{1F1F9}",
+                        'en' => "\u{1F1EC}\u{1F1E7}",
+                        'de' => "\u{1F1E9}\u{1F1EA}",
+                        'fr' => "\u{1F1EB}\u{1F1F7}",
+                    ];
+                    $all_langs = \GW_I18n::get_all_languages();
+                    ?>
+                    <div class="gw-footer__lang-switcher">
+                        <?php foreach ( $all_langs as $code => $label ) : ?>
+                            <a href="<?php echo esc_url( $i18n->get_lang_url( $code ) ); ?>" class="gw-footer__lang-link<?php echo $code === $current_lang ? ' is-active' : ''; ?>" title="<?php echo esc_attr( $label ); ?>">
+                                <span class="gw-footer__lang-flag"><?php echo $lang_flags[ $code ] ?? ''; ?></span>
+                                <?php echo esc_html( strtoupper( $code ) ); ?>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
             </div>
         </footer>
