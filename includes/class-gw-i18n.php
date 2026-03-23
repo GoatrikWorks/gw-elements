@@ -187,6 +187,18 @@ final class GW_I18n {
             $html
         );
 
+        // Protect <script> blocks — JS translations are handled via wp_localize_script.
+        $html = preg_replace_callback(
+            '#<script\b[^>]*>.*?</script>#si',
+            function ( $m ) use ( &$protected, &$counter ) {
+                $key               = '<!--GW_P_' . $counter . '-->';
+                $protected[ $key ] = $m[0];
+                $counter++;
+                return $key;
+            },
+            $html
+        );
+
         // 2. Replace Italian strings with translations.
         $html = str_replace(
             array_keys( $this->translations ),
