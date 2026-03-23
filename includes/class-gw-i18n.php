@@ -187,9 +187,9 @@ final class GW_I18n {
             $html
         );
 
-        // Protect <script> blocks — JS translations are handled via wp_localize_script.
+        // Protect inline script data (wp_localize_script output) from translation.
         $html = preg_replace_callback(
-            '#<script\b[^>]*>.*?</script>#si',
+            '#<script\s+id="[^"]*-extra">[^<]*</script>#i',
             function ( $m ) use ( &$protected, &$counter ) {
                 $key               = '<!--GW_P_' . $counter . '-->';
                 $protected[ $key ] = $m[0];

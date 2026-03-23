@@ -240,7 +240,7 @@ class Assets {
                 'catEnergy'     => 'Stimolanti energetici',
                 'catCleansing'  => 'Purificazione',
                 'catFitness'    => 'Fitness',
-                'catSoulCare'   => "Cura dell'anima",
+                'catSoulCare'   => 'Cura dell\'anima',
                 'catRecovery'   => 'Recupero',
             ];
 
